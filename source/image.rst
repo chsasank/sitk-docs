@@ -5,7 +5,9 @@ Image Basics
 It can hold 2 or 3 dimensional images and pixel can be either be a scalar or a vector. 
 A RGB image for example, is a 2 dimensional image with 3 component vector pixel.
 
-
+.. contents:: Contents
+    :local:
+    :backlinks: none
 
 Construction
 ============
@@ -160,6 +162,9 @@ For example::
     # These two mean the same
     image.SetPixel((x, y, z), 1.2)
     image[x, y, z] = 1.2
+
+Arrays/Tensors
+--------------
 
 If you have `numpy <http://www.numpy.org>`_ library installed in python, you can convert images to arrays and vice versa using ``GetArrayFromImage()`` and ``GetImageFromArray()``.
 Similarly, if you have `torch <http://torch.ch>`_ installed, you can use ``GetTensorFromImage()`` and ``GetImageFromTensor()``.
