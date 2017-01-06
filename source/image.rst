@@ -111,6 +111,8 @@ Each :cpp:class:`Image <itk::simple::Image>` has following properties:
     :cpp:func:`Image::GetDirection() <itk::simple::Image::GetDirection>` and 
     :cpp:func:`Image::SetDirection() <itk::simple::Image::SetDirection>` can be used to get and set direction matrix respectively.
 
+.. note ::
+    All the transformations like rotation or affine transform are done on the underlying physical space. You can think of image of a view of this physical space.
 
 Transform voxels to physical space
 ----------------------------------
@@ -224,14 +226,42 @@ In python, you can use pythonic slicing without having to use these: ::
     sitk.WriteImage(simple, 'SimpleITK_simple.png')
     sitk.WriteImage(simple_flipped, 'SimpleITK_simpleflipped.png')
 
+
 .. image:: images/SimpleITK.png
-    :align: left 
 
 .. image:: images/SimpleITK_subsampled.png
-    :align: right 
+    :align: right
 
 .. image:: images/SimpleITK_simple.png
-    :align: left 
 
 .. image:: images/SimpleITK_simpleflipped.png
-    :align: right 
+    :align: right
+
+
+Image Operations
+================
+SimpleITK supports basic arithmetic operations between images, **taking into account their physical space**::
+    
+    img1 = sitk.Image(24,24, sitk.sitkUInt8)
+    img2 = sitk.Image(img1.GetSize(), sitk.sitkUInt8)
+    img1[0, 0] = 10
+    img2[0, 0] = 30
+    img3 = img1 + img2
+    img4 = img1 + 72
+    print(img3[0, 0], img4[0, 0]) #prints 40  82
+
+    img2.SetOrigin([3, 5])
+    # Following raises error as the images are not in the
+    # same physical space
+    img5 = img 1 + img2 
+
+Following are some of the pixel-wise operations that can be used with image, image pairs or image, scalar pairs:
+    
+* Addition ``+``
+* Subtraction ``-``
+* Multiplication ``*``
+* Division ``/``
+* Modulo ``%``
+* Power ``**``
+
+Lot more operations like sine, cosine, exponentation etc. are also available.
