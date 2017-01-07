@@ -49,6 +49,10 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
 
+# Add copybuttion hs
+def setup(app):
+    app.add_javascript('copybutton.js')
+
 # The master toctree document.
 master_doc = 'index'
 

@@ -21,10 +21,12 @@ All images' initial value is well defined as zero
     Image(sizeVector, pixelID)
     Image(sizeVector, pixelID, numberOfComponents)
 
-For example, in python you can create a RGB image of size 128x64 as::
+For example, in python you can create a RGB image of size 128x64 as
 
-    import SimpleITK as sitk
-    image_RGB = sitk.Image([128,64], sitk.sitkVectorUInt8, 3)
+.. code-block:: python
+
+    >>> import SimpleITK as sitk
+    >>> image_RGB = sitk.Image([128,64], sitk.sitkVectorUInt8, 3)
 
 
 Pixel Types
@@ -153,17 +155,17 @@ In python, you can also use pythonic indexing to get and set pixel values.
 
 For example::
     
-    import SimpleITK as sitk
-    image = sitk.ReadImage('T1_MRI.nii.gz')
-    x, y, z = 10, 15, 20
-    
-    # These two mean the same
-    print(image.GetPixel((x, y, z)))
-    print(img[x, y, z])
-    
-    # These two mean the same
-    image.SetPixel((x, y, z), 1.2)
-    image[x, y, z] = 1.2
+    >>> import SimpleITK as sitk
+    >>> image = sitk.ReadImage('T1_MRI.nii.gz')
+    >>> x, y, z = 10, 15, 20
+    >>> # These two mean the same
+    >>> image.GetPixel((x, y, z))
+    26.7
+    >>> img[x, y, z]
+    26.7
+    >>> # These two mean the same
+    >>> image.SetPixel((x, y, z), 1.2)
+    >>> image[x, y, z] = 1.2
 
 Arrays/Tensors
 --------------
@@ -181,14 +183,16 @@ Numpy and torch are numerical computational libraries for python and lua respect
 
 In numpy for example: ::
 
-    import SimpleITK as sitk
-    sitkimg = sitk.Image(10, 20, 30, sitk.sitkFloat32)
-    sitkimg[1, 2, 3] = 1.5
-    npimg = sitk.GetArrayFromImage(sitkimg)
-
-    print(sitkimg.GetSize()) # prints (10, 20, 30)
-    print(npimg.shape)       # prints (30, 20, 10)
-    print(npimg[1, 2, 3], npimg[3, 2, 1]) # prints 0 1.5
+    >>> import SimpleITK as sitk
+    >>> sitkimg = sitk.Image(10, 20, 30, sitk.sitkFloat32)
+    >>> sitkimg[1, 2, 3] = 1.5
+    >>> npimg = sitk.GetArrayFromImage(sitkimg)
+    >>> print(sitkimg.GetSize())
+    (10, 20, 30)
+    >>> print(npimg.shape)
+    (30, 20, 10)
+    >>> print(npimg[1, 2, 3], npimg[3, 2, 1])
+    0 1.5
 
 In torch, indexing starts with 1:
 
@@ -211,20 +215,17 @@ Slicing
 :cpp:func:`Slice() <itk::simple::Slice>` can be used to slice the image and a dimension can be collapsed with :cpp:func:`Extract() <itk::simple::Extract>`. 
 In python, you can use pythonic slicing without having to use these: ::
     
-    logo = sitk.ReadImage('SimpleITK.png')
-
-    # Brute force subsampling 
-    logo_subsampled = logo[::2,::2]
-
-    # Get the sub-image containing the word Simple
-    simple = logo[0:155,:]
-
-    # Get the sub-image containing the word Simple and flip it
-    simple_flipped = logo[155:0:-1,:]
-
-    sitk.WriteImage(logo_subsampled, 'SimpleITK_subsampled.png')
-    sitk.WriteImage(simple, 'SimpleITK_simple.png')
-    sitk.WriteImage(simple_flipped, 'SimpleITK_simpleflipped.png')
+    >>> logo = sitk.ReadImage('SimpleITK.png')
+    >>> # Brute force subsampling 
+    >>> logo_subsampled = logo[::2,::2]
+    >>> # Get the sub-image containing the word Simple
+    >>> simple = logo[0:155,:]
+    >>> # Get the sub-image containing the word Simple and flip it
+    >>> simple_flipped = logo[155:0:-1,:]
+    >>> # Save images
+    >>> sitk.WriteImage(logo_subsampled, 'SimpleITK_subsampled.png')
+    >>> sitk.WriteImage(simple, 'SimpleITK_simple.png')
+    >>> sitk.WriteImage(simple_flipped, 'SimpleITK_simpleflipped.png')
 
 
 .. image:: images/SimpleITK.png
@@ -242,18 +243,28 @@ Image Operations
 ================
 SimpleITK supports basic arithmetic operations between images, **taking into account their physical space**::
     
-    img1 = sitk.Image(24,24, sitk.sitkUInt8)
-    img2 = sitk.Image(img1.GetSize(), sitk.sitkUInt8)
-    img1[0, 0] = 10
-    img2[0, 0] = 30
-    img3 = img1 + img2
-    img4 = img1 + 72
-    print(img3[0, 0], img4[0, 0]) #prints 40  82
+    >>> img1 = sitk.Image(24,24, sitk.sitkUInt8)
+    >>> img2 = sitk.Image(img1.GetSize(), sitk.sitkUInt8)
+    >>> img1[0, 0] = 10
+    >>> img2[0, 0] = 30
+    >>> img3 = img1 + img2
+    >>> img4 = img1 + 72
+    >>> print(img3[0, 0], img4[0, 0])
+    40 82
+    >>> img2.SetOrigin([3, 5])
+    >>> # Following raises error as the images are not in the
+    >>> # same physical space
+    >>> img5 = img1 + img2 
+    Traceback (most recent call last):
+        ...
+    RuntimeError: Exception thrown in SimpleITK Add: ../include/itkImageToImageFilter.hxx:24
+    8:
+    itk::ERROR: AddImageFilter(0x103cda880): Inputs do not occupy the same physical 
+    space! 
+    InputImage Origin: [0.0000000e+00, 0.0000000e+00], InputImage_1 Origin: [3.00000
+    00e+00, 5.0000000e+00]
+        Tolerance: 1.0000000e-06
 
-    img2.SetOrigin([3, 5])
-    # Following raises error as the images are not in the
-    # same physical space
-    img5 = img 1 + img2 
 
 Following are some of the pixel-wise operations that can be used with image, image pairs or image, scalar pairs:
     
