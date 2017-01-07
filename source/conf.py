@@ -58,8 +58,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'SimpleITK'
-copyright = '2016, ACTUAL SITK PEOPLE & Sasank'
-author = 'ACTUAL SITK PEOPLE & Sasank'
+copyright = '2017, Insight Software Consortium & Sasank'
+author = 'Insight Software Consortium & Sasank'
 
 # Breathe Setup
 breathe_projects = {'SimpleITK': 'doxyxml/'}
