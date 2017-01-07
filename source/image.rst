@@ -257,12 +257,12 @@ SimpleITK supports basic arithmetic operations between images, **taking into acc
     >>> img5 = img1 + img2 
     Traceback (most recent call last):
         ...
-    RuntimeError: Exception thrown in SimpleITK Add: ../include/itkImageToImageFilter.hxx:24
-    8:
-    itk::ERROR: AddImageFilter(0x103cda880): Inputs do not occupy the same physical 
-    space! 
-    InputImage Origin: [0.0000000e+00, 0.0000000e+00], InputImage_1 Origin: [3.00000
-    00e+00, 5.0000000e+00]
+    RuntimeError: Exception thrown in SimpleITK Add: 
+    .../include/itkImageToImageFilter.hxx:248:
+    itk::ERROR: AddImageFilter(0x103cda880): Inputs do not 
+    occupy the same physical space! 
+    InputImage Origin: [0.0000000e+00, 0.0000000e+00], 
+    InputImage_1 Origin: [3.0000000e+00, 5.0000000e+00]
         Tolerance: 1.0000000e-06
 
 
