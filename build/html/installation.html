@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing SimpleITK &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Image Basics" href="image.html" />
+    <link rel="prev" title="Overview" href="overview.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-simpleitk">
+<h1>Installing SimpleITK<a class="headerlink" href="#installing-simpleitk" title="Permalink to this headline">¶</a></h1>
+<p>Typically, you don&#8217;t need to build SimpleITK to use it.
+You can simply download the binaries and get started right away!</p>
+<p>Currently, Python binaries are available on Windows, Linux and Mac OS X. C# and Java binaries are available for Windows. We are also working towards supporting R packaging.</p>
+<div class="section" id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">Virtual environments</a> are highly recommended. They allow you to elegantly deal with package compatibility issues.</p>
+<div class="section" id="standard-python-installation">
+<h3>Standard Python installation<a class="headerlink" href="#standard-python-installation" title="Permalink to this headline">¶</a></h3>
+<p>From the shell, execute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">simpleitk</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conda-based-distributions-anaconda-miniconda">
+<h3>Conda-based distributions (Anaconda, Miniconda)<a class="headerlink" href="#conda-based-distributions-anaconda-miniconda" title="Permalink to this headline">¶</a></h3>
+<p>From the shell/command prompt, execute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">conda</span><span class="o">.</span><span class="n">anaconda</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simpleitk</span> <span class="n">SimpleITK</span>
+</pre></div>
+</div>
+<p>Beta and release candidate packages are also available on Anaconda cloud under the dev label:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">conda</span><span class="o">.</span><span class="n">anaconda</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simpleitk</span><span class="o">/</span><span class="n">label</span><span class="o">/</span><span class="n">dev</span> <span class="n">SimpleITK</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="c-sharp-c">
+<h2>C Sharp (C#)<a class="headerlink" href="#c-sharp-c" title="Permalink to this headline">¶</a></h2>
+<p>Binaries for select C# platform can be found on <a class="reference external" href="https://sourceforge.net/projects/simpleitk/files/SimpleITK/0.10.0/CSharp/">SimpleITK&#8217;s SourceForge page</a>.
+Installing the library should only involve importing the unzipped files into you C# environment.</p>
+<p>The files have the following naming convention:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SimpleITK</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">CSharp</span><span class="o">-</span><span class="n">buildplatform</span><span class="o">-</span><span class="n">targetplatform</span><span class="o">.</span><span class="n">zip</span>
+</pre></div>
+</div>
+<p>Following files are currently available:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SimpleITK</span><span class="o">-</span><span class="mf">0.10</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">CSharp</span><span class="o">-</span><span class="n">win32</span><span class="o">-</span><span class="n">x86</span><span class="o">.</span><span class="n">zip</span>
+<span class="n">SimpleITK</span><span class="o">-</span><span class="mf">0.10</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">CSharp</span><span class="o">-</span><span class="n">win64</span><span class="o">-</span><span class="n">x64</span><span class="o">.</span><span class="n">zip</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="index.html">
+  <img class="logo" src="_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing SimpleITK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c-sharp-c">C Sharp (C#)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, ACTUAL SITK PEOPLE & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/installation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
