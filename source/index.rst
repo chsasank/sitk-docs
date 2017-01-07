@@ -21,6 +21,7 @@ Contents
    overview
    installation
    image
+   auto_examples/index.rst
    api
 
 
