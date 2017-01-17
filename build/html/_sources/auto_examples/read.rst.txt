@@ -21,7 +21,7 @@ This is how you read 3d images in python.
     img = sitk.ReadImage('file.nii.gz')
     sitk.WriteImage(img, 'file2.nii.gz')
 
-**Total running time of the script:** ( 0 minutes  0.003 seconds)
+**Total running time of the script:** ( 0 minutes  0.004 seconds)
 
 
 
