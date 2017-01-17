@@ -89,13 +89,13 @@ Edges and Lines
 
   .. container:: sphx-glr-download
 
-    :download:`Download all examples in Python source code: _Users_Sasank_work_software_sitk-docs_source_auto_examples_source.zip <//Users/Sasank/work/software/sitk-docs/source/auto_examples/_Users_Sasank_work_software_sitk-docs_source_auto_examples_source.zip>`
+    :download:`Download all examples in source code: auto_examples_source.zip <//Users/Sasank/work/software/sitk-docs/source/auto_examples/auto_examples_source.zip>`
 
 
 
   .. container:: sphx-glr-download
 
-    :download:`Download all examples in Jupyter notebooks: _Users_Sasank_work_software_sitk-docs_source_auto_examples_jupyter.zip <//Users/Sasank/work/software/sitk-docs/source/auto_examples/_Users_Sasank_work_software_sitk-docs_source_auto_examples_jupyter.zip>`
+    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip <//Users/Sasank/work/software/sitk-docs/source/auto_examples/auto_examples_jupyter.zip>`
 
 .. rst-class:: sphx-glr-signature
 
