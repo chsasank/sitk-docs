@@ -40,3 +40,19 @@ Following files are currently available::
 	
 	SimpleITK-0.10.0-CSharp-win32-x86.zip
 	SimpleITK-0.10.0-CSharp-win64-x64.zip
+
+A guide describing how to set up a C# Visual Studio project with SimpleITK can be found :doc:`here <building/csharp>`. 
+For platforms other than Windows, you might have to build manually as described in :doc:`building/unix`.
+
+Java
+====
+Binaries for select Java platforms can be found on `SimpleITK's SourceForge page <https://sourceforge.net/projects/simpleitk/files/SimpleITK/0.10.0/Java/>`_. 
+
+Following files are currently available::
+	
+	SimpleITK-0.10.0-Java-win64.zip	
+	SimpleITK-0.10.0-Java-win32.zip	
+
+More instructions are available at :doc:`building/java`
+
+For platforms other than Windows, you might have to build manually as described in :doc:`building/unix`.

@@ -20,6 +20,7 @@ Contents
 
    overview
    installation
+   building/build.rst
    image
    auto_examples/index.rst
    api
