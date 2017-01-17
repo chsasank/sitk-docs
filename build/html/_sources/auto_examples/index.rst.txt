@@ -1,3 +1,5 @@
+:orphan:
+
 .. _examples_gallery:
 
 Gallery
@@ -9,6 +11,46 @@ General-purpose and introductory examples for SimpleITK.
 
 
 
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This is how you read 3d images in python. ">
+
+.. only:: html
+
+    .. figure:: /auto_examples/images/thumb/sphx_glr_read_thumb.png
+
+        :ref:`sphx_glr_auto_examples_read.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/read
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This is how you read 3d images in lua. ">
+
+.. only:: html
+
+    .. figure:: /auto_examples/images/thumb/sphx_glr_read_lua_thumb.png
+
+        :ref:`sphx_glr_auto_examples_read.lua`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/read.lua
 .. raw:: html
 
     <div style='clear:both'></div>
@@ -47,13 +89,13 @@ Edges and Lines
 
   .. container:: sphx-glr-download
 
-    :download:`Download all examples in Python source code: auto_examples_python.zip </auto_examples/auto_examples_python.zip>`
+    :download:`Download all examples in Python source code: _Users_Sasank_work_software_sitk-docs_source_auto_examples_source.zip <//Users/Sasank/work/software/sitk-docs/source/auto_examples/_Users_Sasank_work_software_sitk-docs_source_auto_examples_source.zip>`
 
 
 
   .. container:: sphx-glr-download
 
-    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip </auto_examples/auto_examples_jupyter.zip>`
+    :download:`Download all examples in Jupyter notebooks: _Users_Sasank_work_software_sitk-docs_source_auto_examples_jupyter.zip <//Users/Sasank/work/software/sitk-docs/source/auto_examples/_Users_Sasank_work_software_sitk-docs_source_auto_examples_jupyter.zip>`
 
 .. rst-class:: sphx-glr-signature
 
