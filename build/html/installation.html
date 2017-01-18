@@ -53,19 +53,24 @@ You can simply download the binaries and get started right away!</p>
 <p><a class="reference external" href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">Virtual environments</a> are highly recommended. They allow you to elegantly deal with package compatibility issues.</p>
 <div class="section" id="standard-python-installation">
 <h3>Standard Python installation<a class="headerlink" href="#standard-python-installation" title="Permalink to this headline">¶</a></h3>
-<p>From the shell, execute:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">simpleitk</span>
+<p>From the shell, execute</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install simpleitk
+</pre></div>
+</div>
+<p>You can always manually download the wheels for your operating system and Python version directly from <a class="reference external" href="http://sourceforge.net/projects/simpleitk/files/SimpleITK/">sourceforge</a>. You might need to update your pip using <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">pip</span></code>.</p>
+<p>The pip package manager should automatically find the correct package for MS Windows and GNU Linux if your version is supported. For Apple OS X you need to manually specify:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install https://sourceforge.net/projects/simpleitk/files/SimpleITK/0.10.0/Python/SimpleITK-0.10.0-cp27-cp27m-macosx_10_6_intel.whl
 </pre></div>
 </div>
 </div>
 <div class="section" id="conda-based-distributions-anaconda-miniconda">
 <h3>Conda-based distributions (Anaconda, Miniconda)<a class="headerlink" href="#conda-based-distributions-anaconda-miniconda" title="Permalink to this headline">¶</a></h3>
-<p>From the shell/command prompt, execute:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">conda</span><span class="o">.</span><span class="n">anaconda</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simpleitk</span> <span class="n">SimpleITK</span>
+<p>From the shell/command prompt, execute</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda install -c https://conda.anaconda.org/simpleitk SimpleITK
 </pre></div>
 </div>
-<p>Beta and release candidate packages are also available on Anaconda cloud under the dev label:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">conda</span><span class="o">.</span><span class="n">anaconda</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simpleitk</span><span class="o">/</span><span class="n">label</span><span class="o">/</span><span class="n">dev</span> <span class="n">SimpleITK</span>
+<p>Beta and release candidate packages are also available on Anaconda cloud under the dev label</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda install -c https://conda.anaconda.org/simpleitk/label/dev SimpleITK
 </pre></div>
 </div>
 </div>
@@ -94,8 +99,13 @@ For platforms other than Windows, you might have to build manually as described 
 <span class="n">SimpleITK</span><span class="o">-</span><span class="mf">0.10</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">Java</span><span class="o">-</span><span class="n">win32</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
-<p>More instructions are available at <a class="reference internal" href="building/java.html"><span class="doc">Guide to SimpleITK in Java</span></a></p>
-<p>For platforms other than Windows, you might have to build manually as described in <a class="reference internal" href="building/unix.html"><span class="doc">Building SimpleITK</span></a>.</p>
+<p>Detailed instructions are available at <a class="reference internal" href="building/java.html"><span class="doc">Visual guide to SimpleITK with Java</span></a>.
+For platforms other than Windows, you might have to build manually as described in <a class="reference internal" href="building/unix.html"><span class="doc">Building SimpleITK</span></a>.</p>
+</div>
+<div class="section" id="nightly-binaries">
+<h2>Nightly binaries<a class="headerlink" href="#nightly-binaries" title="Permalink to this headline">¶</a></h2>
+<p>The latest binaries for the current development version of SimpleITK are also generally available. Binary packages are built as part of the nightly regression testing system. The download links are available from the <a class="reference external" href="https://open.cdash.org/index.php?project=SimpleITK">CDash</a> dashboard in the &#8220;Nightly Packages&#8221; section.</p>
+<p>Each row on the dashboard is a SimpleITK build on a particular system, and if the build was successful there will be a package icon: package.png which links to the packages build by the system. A user may directly download the built package from such a link.</p>
 </div>
 </div>
 
@@ -115,11 +125,13 @@ For platforms other than Windows, you might have to build manually as described 
 <li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c-sharp-c">C Sharp (C#)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#java">Java</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nightly-binaries">Nightly binaries</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="building/build.html">Build Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="image.html">Image Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
 

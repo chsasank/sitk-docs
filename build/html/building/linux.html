@@ -29,6 +29,8 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Visual guide to SimpleITK with Java" href="java.html" />
+    <link rel="prev" title="Building SimpleITK" href="unix.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -43,6 +45,349 @@
             
   <div class="section" id="visual-guide-to-building-on-linux">
 <h1>Visual guide to building on Linux<a class="headerlink" href="#visual-guide-to-building-on-linux" title="Permalink to this headline">¶</a></h1>
+<p>This guide gives detailed instructions for
+building SimpleITK on Linux. It is written for beginners getting started
+with SimpleITK. There are examples of how to develop and execute simple
+programs in C Sharp and Lua.</p>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#why-linux" id="id14">Why Linux?</a></li>
+<li><a class="reference internal" href="#step-1-get-linux" id="id15">Step 1: Get Linux</a></li>
+<li><a class="reference internal" href="#step-2-install-build-tools" id="id16">Step 2: Install build tools</a></li>
+<li><a class="reference internal" href="#step-3-get-simpleitk-source-code" id="id17">Step 3: Get SimpleITK source code</a></li>
+<li><a class="reference internal" href="#step-4-build-simpleitk" id="id18">Step 4: Build SimpleITK</a></li>
+<li><a class="reference internal" href="#step-5-use-simpleitk" id="id19">Step 5: Use SimpleITK</a><ul>
+<li><a class="reference internal" href="#a-simple-c-program" id="id20">A simple C# program</a></li>
+<li><a class="reference internal" href="#a-simple-lua-program" id="id21">A simple lua program</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="why-linux">
+<h2>Why Linux?<a class="headerlink" href="#why-linux" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Linux is freely available</li>
+<li>It has all the required tools</li>
+<li>Did I mention it&#8217;s free?</li>
+</ul>
+</div>
+<div class="section" id="step-1-get-linux">
+<h2>Step 1: Get Linux<a class="headerlink" href="#step-1-get-linux" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to install a Linux distribution. Some popular ones
+are:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.ubuntu.com/download">Ubuntu</a></li>
+<li><a class="reference external" href="http://www.linuxmint.com/download.php">Linux Mint</a></li>
+<li><a class="reference external" href="http://www.debian.org/">Debian</a></li>
+</ul>
+<p>And here is a <a class="reference external" href="http://www.makeuseof.com/tag/debian-ubuntu-linux-mint-distribution/">comparison of those
+distributions</a>.</p>
+<p>There are many online tutorials explaining how to install your chosen
+Linux distribution:</p>
+<ul class="simple">
+<li>Ubuntu<ul>
+<li><a class="reference external" href="https://help.ubuntu.com/community/Installation">Ubuntu Installation
+guide</a></li>
+<li><a class="reference external" href="http://www.youtube.com/watch?v=GhnLk3gviWY">Learn How to Install Ubuntu Linux in 5 Minutes
+(youtube)</a></li>
+<li><a class="reference external" href="https://seogadget.co.uk/the-ubuntu-installation-guide">The Ubuntu Installation Guide (with
+pictures)</a></li>
+</ul>
+</li>
+<li>Mint<ul>
+<li><a class="reference external" href="http://www.linuxmint.com/documentation/user-guide/english_15.0.pdf">Linux Mint User Guide
+(English)</a></li>
+<li><a class="reference external" href="http://www.howtogeek.com/howto/20079/install-linux-mint-on-your-windows-computer-or-netbook/">Install Linux Mint on your Windows computer
+(howtogeek)</a></li>
+<li><a class="reference external" href="http://www.youtube.com/watch?v=7IK35nZuTlk">How to Install Linux Mint
+(youtube)</a></li>
+</ul>
+</li>
+<li>Debian<ul>
+<li><a class="reference external" href="https://www.youtube.com/watch?v=TIuOFqQ-XTk">Debian 7 Installation
+(youtube)</a></li>
+<li><a class="reference external" href="http://www.wikihow.com/Install-Debian">Install Debian</a></li>
+</ul>
+</li>
+</ul>
+<p>If you are a Windows user, you may consider running Linux on a virtual
+machine. Some popular virtual machine environments are:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.virtualbox.org/">VirtualBox</a></li>
+<li><a class="reference external" href="http://www.vmware.com/">VMWare</a></li>
+</ul>
+<p>If you are a Mac OS X user, you can also run Linux in a virtual machine.
+Two virtual machine environments for OS X are:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.parallels.com/products/desktop/">Parallels</a></li>
+<li><a class="reference external" href="http://www.vmware.com/products/fusion/">VMWare Fusion</a></li>
+</ul>
+<p>Again, there are heaps of tutorials:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.psychocats.net/ubuntu/virtualbox">Installing Ubuntu inside Windows using
+VirtualBox</a></li>
+<li><a class="reference external" href="http://www.wikihow.com/Install-Ubuntu-on-VirtualBox">How to Install Ubuntu on
+VirtualBox</a></li>
+<li><a class="reference external" href="http://www.zealfortechnology.com/2014/03/install-linux-mint-16-on-virtualbox.html">Install Mint 16 on
+VirtualBox</a></li>
+<li><a class="reference external" href="http://www.youtube.com/watch?v=D-NYWSoiaTg">How to Install Linux Mint in Virtualbox
+(youtube)</a></li>
+</ul>
+<p>This guide uses Debian 7, but the steps are very similar for other Linux
+distributions.</p>
+</div>
+<div class="section" id="step-2-install-build-tools">
+<h2>Step 2: Install build tools<a class="headerlink" href="#step-2-install-build-tools" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to install the required build tools.</p>
+<div class="figure" id="id1">
+<img alt="../_images/SimpleITK_visual_guide_step02_01.png" src="../_images/SimpleITK_visual_guide_step02_01.png" />
+<p class="caption"><span class="caption-text">Install the build tools by opening the terminal</span></p>
+</div>
+<div class="figure" id="id2">
+<img alt="../_images/SimpleITK_visual_guide_step02_02.png" src="../_images/SimpleITK_visual_guide_step02_02.png" />
+<p class="caption"><span class="caption-text">In the terminal, use apt-get to install the build tools</span></p>
+</div>
+<p>Open a terminal window (Application Menu &gt; Terminal Emulator) and run the following command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo apt-get install cmake cmake-curses-gui gcc g++ git
+</pre></div>
+</div>
+<p>Confirm that you want to install the packages (press &#8220;y&#8221;), then wait for the installation to complete.</p>
+<div class="figure" id="id3">
+<img alt="../_images/SimpleITK_visual_guide_step02_03.png" src="../_images/SimpleITK_visual_guide_step02_03.png" />
+<p class="caption"><span class="caption-text">Build tools could also be installed using the software manager</span></p>
+</div>
+<p>Alternatively, you could manually select each software package from the <a class="reference external" href="http://www.nongnu.org/synaptic/">Synaptic Package Manager</a> (Application Menu &gt; Settings &gt; Synaptic Package Manager).</p>
+<p>By default building SimpleITK produces the SimpleITK <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B">C++</a> libraries and the SimpleITK <a class="reference external" href="http://en.wikipedia.org/wiki/Lua_(programming_language)">Lua</a> interpreter. It also supports bindings for other languages. To build this support, additional packages need to be installed. The following table shows the supported language bindings and the corresponding command to install the additional packages required for each language.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Programming Language</th>
+<th class="head">Command to install the build tools</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="http://en.wikipedia.org/wiki/C_Sharp_(programming_language)">C#</a></td>
+<td>sudo apt-get install monodevelop</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://en.wikipedia.org/wiki/Java_(programming_language)">Java</a></td>
+<td>sudo apt-get install eclipse</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://en.wikipedia.org/wiki/R_programming_language">R</a></td>
+<td>sudo apt-get install r-base r-base-dev</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://en.wikipedia.org/wiki/Ruby_(programming_language)">Ruby</a></td>
+<td>sudo apt-get install ruby</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://en.wikipedia.org/wiki/Python_(programming_language)">Python</a></td>
+<td>sudo apt-get install python python-dev</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://en.wikipedia.org/wiki/Tcl">Tcl</a></td>
+<td>sudo apt-get install tcl tcl-dev tk tk-dev</td>
+</tr>
+<tr class="row-even"><td>All languages</td>
+<td>sudo apt-get install monodevelop eclipse r-base r-base-dev ruby python python-dev tcl tcl-dev tk tk-dev</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="step-3-get-simpleitk-source-code">
+<h2>Step 3: Get SimpleITK source code<a class="headerlink" href="#step-3-get-simpleitk-source-code" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to get the SimpleITK source code using git.
+Decide where you want to put the source code. I&#8217;m putting mine in my home directory:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~
+</pre></div>
+</div>
+<p>Now download the SimpleITK source code, by entering the following command in the Terminal:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone --recursive  http://itk.org/SimpleITK.git
+</pre></div>
+</div>
+<div class="figure" id="id4">
+<img alt="../_images/SimpleITK_visual_guide_step03_02.png" src="../_images/SimpleITK_visual_guide_step03_02.png" />
+<p class="caption"><span class="caption-text">Get the SimpleITK source code using git</span></p>
+</div>
+<p>Now change to the SimpleITK directory:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> SimpleITK
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-4-build-simpleitk">
+<h2>Step 4: Build SimpleITK<a class="headerlink" href="#step-4-build-simpleitk" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to start building.</p>
+<p>The recommended way to build is via the so-called &#8220;super build&#8221;. The
+build directory should not be inside the source tree. I put the build
+directory in the same directory as the source tree.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~
+mkdir SimpleITK-build
+<span class="nb">cd</span> SimpleITK-build
+cmake ../SimpleITK/SuperBuild
+</pre></div>
+</div>
+<p>The SuperBuild generates make files which takes care of downloading and
+building ITK, SWIG, and Lua, as well as SimpleITK.</p>
+<p>To start the (long) build process, type:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>make
+</pre></div>
+</div>
+<p>On my test system, a 4 core virtual machine with 16 GB of RAM, the build
+took just over an hour.</p>
+<p>After the build is finished, you need to add SimpleITK to your
+<code class="docutils literal"><span class="pre">LD_LIBRARY_PATH</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>$LD_LIBRARY_PATH:~/SimpleITK-build/lib
+</pre></div>
+</div>
+<p>You can now (optionally) check whether the build was successful:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/SimpleITK-build
+ctest
+</pre></div>
+</div>
+<p>All (or at least most) of the tests should pass.</p>
+</div>
+<div class="section" id="step-5-use-simpleitk">
+<h2>Step 5: Use SimpleITK<a class="headerlink" href="#step-5-use-simpleitk" title="Permalink to this headline">¶</a></h2>
+<p>SimpleITK is available to a variety of languages. In this section we
+give simple example programs demonstrating the SimpleITK API in C Sharp
+and Lua.</p>
+<div class="section" id="a-simple-c-program">
+<h3>A simple C# program<a class="headerlink" href="#a-simple-c-program" title="Permalink to this headline">¶</a></h3>
+<p>This sub-section will describe how to create a simple C# application using SimpleITK from MonoDevelop.
+To start launch the C# development environment, MonoDevelop (Application Menu &gt; Development &gt; MonoDevelop).</p>
+<div class="figure" id="id5">
+<img alt="../_images/SimpleITK_visual_guide_step05_CSharp_01.png" src="../_images/SimpleITK_visual_guide_step05_CSharp_01.png" />
+<p class="caption"><span class="caption-text">Open MonoDevelop</span></p>
+</div>
+<p>Then create our new Solution (Select File &gt; New &gt; Solution).</p>
+<p>Select a C# console project (C# &gt; Console Project). Enter a suitable name e.g. &#8220;sitk&#8221; and uncheck &#8220;Create directory for directory&#8221;. Select &#8220;Forward&#8221; and then &#8220;OK&#8221;.</p>
+<div class="figure" id="id6">
+<img alt="../_images/SimpleITK_visual_guide_step05_CSharp_02.png" src="../_images/SimpleITK_visual_guide_step05_CSharp_02.png" />
+<p class="caption"><span class="caption-text">Create Console Project</span></p>
+</div>
+<p>In the Solution explorer, right-click &#8220;Selection&#8221; and select &#8220;Edit References...&#8221;.</p>
+<div class="figure" id="id7">
+<img alt="../_images/SimpleITK_visual_guide_step05_CSharp_03.png" src="../_images/SimpleITK_visual_guide_step05_CSharp_03.png" />
+<p class="caption"><span class="caption-text">Edit References</span></p>
+</div>
+<p>Select the &#8221;.Net Assembly&#8221; tab, navigate to &#8220;~/SimpleITK-build/SimpleITK-build/Wrapping/CSharpBinaries&#8221;, select &#8220;SimpleITKCSharpManaged.dll&#8221;, click &#8220;Add&#8221;, and then close the window by selecting &#8220;OK&#8221;. This will copy &#8220;SimpleITKCSharpManaged.dll&#8221; to your build directory e.g. &#8220;bin/Debug&#8221; or &#8220;bin/Release&#8221;.</p>
+<div class="figure" id="id8">
+<img alt="../_images/SimpleITK_visual_guide_step05_CSharp_04.png" src="../_images/SimpleITK_visual_guide_step05_CSharp_04.png" />
+<p class="caption"><span class="caption-text">Add SimpleITKCSharpManaged.dll</span></p>
+</div>
+<p>You must also manually copy &#8220;libSimpleITKCSharpNative.so&#8221; to your build directories:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir ~/sitk/bin/Debug
+mkdir ~/sitk/bin/Release
+cp ~/SimpleITK-build/SimpleITK-build/Wrapping/CSharpBinaries/libSimpleITKCSharpNative.so ~/sitk/bin/Debug
+cp ~/SimpleITK-build/SimpleITK-build/Wrapping/CSharpBinaries/libSimpleITKCSharpNative.so ~/sitk/bin/Release
+</pre></div>
+</div>
+<p>SimpleITK has now been added as a project reference.</p>
+<p>The following short program creates an image of a Gaussian blob, generates a derivative image from the Gaussian, scales and windows the derivative&#8217;s intensities, converts the result to 8-bit unsigned ints, and writes out a PNG file:</p>
+<div class="highlight-csharp"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">sitk</span> <span class="p">=</span> <span class="n">itk</span><span class="p">.</span><span class="n">simple</span><span class="p">.</span><span class="n">SimpleITK</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">itk.simple</span>
+<span class="p">{</span>
+    <span class="k">class</span> <span class="nc">MainClass</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span> <span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">size</span> <span class="p">=</span> <span class="k">new</span> <span class="n">VectorUInt32</span> <span class="p">(</span><span class="k">new</span> <span class="kt">uint</span><span class="p">[]</span> <span class="p">{</span> <span class="m">128</span><span class="p">,</span> <span class="m">128</span> <span class="p">});</span>
+            <span class="kt">var</span> <span class="n">sigma</span> <span class="p">=</span> <span class="k">new</span> <span class="n">VectorDouble</span> <span class="p">(</span><span class="k">new</span> <span class="n">Double</span><span class="p">[]</span> <span class="p">{</span> <span class="m">32.0</span><span class="p">,</span> <span class="m">32.0</span> <span class="p">});</span>
+            <span class="kt">var</span> <span class="n">center</span> <span class="p">=</span> <span class="k">new</span> <span class="n">VectorDouble</span> <span class="p">(</span><span class="k">new</span> <span class="n">Double</span><span class="p">[]</span> <span class="p">{</span> <span class="m">64.0</span><span class="p">,</span> <span class="m">64.0</span> <span class="p">});</span>
+
+            <span class="kt">var</span> <span class="n">gauss</span> <span class="p">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">GaussianSource</span> <span class="p">(</span><span class="n">PixelIDValueEnum</span><span class="p">.</span><span class="n">sitkFloat32</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">center</span><span class="p">);</span>
+
+            <span class="kt">var</span> <span class="n">deriv</span> <span class="p">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">Cast</span> <span class="p">(</span><span class="m">128.0</span> <span class="p">+</span> <span class="m">24.0</span> <span class="p">*</span> <span class="n">sitk</span><span class="p">.</span><span class="n">Derivative</span> <span class="p">(</span><span class="n">gauss</span><span class="p">),</span> <span class="n">PixelIDValueEnum</span><span class="p">.</span><span class="n">sitkUInt8</span><span class="p">);</span>
+
+            <span class="n">sitk</span><span class="p">.</span><span class="n">WriteImage</span> <span class="p">(</span><span class="n">deriv</span><span class="p">,</span> <span class="s">&quot;gauss-deriv-test.png&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="figure" id="id9">
+<img alt="../_images/SimpleITK_visual_guide_step05_CSharp_05.png" src="../_images/SimpleITK_visual_guide_step05_CSharp_05.png" />
+<p class="caption"><span class="caption-text">A simple C# program</span></p>
+</div>
+<p>Note that in the example, the derivative image&#8217;s intensities are scaled mathematically to illustrate SimpleITK&#8217;s overloading of the mathematically operators. The image intensities could also be scaled using SimpleITK&#8217;s RescaleIntesity function.</p>
+<p>To build the project press &#8220;F8&#8221; or select Build &gt; Build All from the menu.</p>
+<p>To debug the project, add a breakpoint at a desired location and press &#8220;F5&#8221;.</p>
+<p>The Gaussian Derivative image below shows the results of the C# example program.</p>
+<div class="figure" id="id10">
+<img alt="../_images/SimpleITK_visual_guide_step05_CSharp_06.png" src="../_images/SimpleITK_visual_guide_step05_CSharp_06.png" />
+<p class="caption"><span class="caption-text">Gaussian Derivative image</span></p>
+</div>
+</div>
+<div class="section" id="a-simple-lua-program">
+<h3>A simple lua program<a class="headerlink" href="#a-simple-lua-program" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://www.lua.org/about.html">Lua</a> is a fast, portable, lightweight
+scripting language that is included with the SimpleITK source code.
+Because the entire source code for Lua is less than 600kb, it takes very
+little space relative to large projects such as SimpleITK. That makes
+Lua very popular as an embedded scripting language.</p>
+<p>In this SimpleITK/Lua example we show how to use a text editor to
+produce a SimpleITK example in Lua and execute the program.</p>
+<p>By default, Debian with the Xfce user interface, comes with <strong>Mousepad</strong>
+(Application Menu &gt; Accessories &gt; Mousepad), a simple text editor. Other
+possible editors include <strong>gedit</strong> with Gnome or <strong>kedit</strong> with KDE.</p>
+<div class="figure" id="id11">
+<img alt="../_images/SimpleITK_visual_guide_step05_Lua01.png" src="../_images/SimpleITK_visual_guide_step05_Lua01.png" />
+<p class="caption"><span class="caption-text">Open Mousepad</span></p>
+</div>
+<p>The following is a simple Lua example similar to the C# example in the previous section.
+This program creates an image of a Gaussian blob, computes a derivative image of the
+Gaussian, rescales the floating point image to 0-255, casts it to a unsigned char image,
+and writes the result to a PNG file.</p>
+<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">sitk</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">sitk</span> <span class="o">=</span> <span class="n">SimpleITK</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">VectorUInt32</span><span class="p">();</span>
+<span class="n">size</span><span class="p">:</span><span class="n">push_back</span><span class="p">(</span><span class="mi">128</span><span class="p">);</span>
+<span class="n">size</span><span class="p">:</span><span class="n">push_back</span><span class="p">(</span><span class="mi">128</span><span class="p">);</span>
+
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">VectorDouble</span><span class="p">();</span>
+<span class="n">sigma</span><span class="p">:</span><span class="n">push_back</span><span class="p">(</span><span class="mf">32.0</span><span class="p">);</span>
+<span class="n">sigma</span><span class="p">:</span><span class="n">push_back</span><span class="p">(</span><span class="mf">32.0</span><span class="p">);</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">VectorDouble</span><span class="p">();</span>
+<span class="n">center</span><span class="p">:</span><span class="n">push_back</span><span class="p">(</span><span class="mf">64.0</span><span class="p">);</span>
+<span class="n">center</span><span class="p">:</span><span class="n">push_back</span><span class="p">(</span><span class="mf">64.0</span><span class="p">);</span>
+
+<span class="n">gauss</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">GaussianSource</span> <span class="p">(</span><span class="n">sitk</span><span class="p">.</span><span class="n">sitkFloat32</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">center</span><span class="p">);</span>
+
+<span class="n">deriv</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">Derivative</span><span class="p">(</span><span class="n">gauss</span><span class="p">);</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">deriv</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">255.0</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">sitk</span><span class="p">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+
+<span class="n">sitk</span><span class="p">.</span><span class="n">WriteImage</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">sitk-lua-test.png&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure" id="id12">
+<img alt="../_images/SimpleITK_visual_guide_step05_lua_02.png" src="../_images/SimpleITK_visual_guide_step05_lua_02.png" />
+<p class="caption"><span class="caption-text">Simple Lua Program</span></p>
+</div>
+<p>The script is slightly different than the C# example in that the RescaleIntensity filter is used. In C# mathematical operators are overloaded for SimpleITK images.
+This is not the case for Lua, so mathematical operations on SimpleITK images are a bit more complicated.
+Therefore I chose to use a built in filter.</p>
+<p>To try out the program, copy the code and paste it into Mousepad. Then
+Save it as &#8220;DerivativeExample.lua&#8221; and enter the following command in a
+Terminal window.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>~/SimpleITK-build/SimpleITK-build/bin/SimpleITKLua DerivativeExample.lua
+</pre></div>
+</div>
+<p>The Lua Derivative image below shows the output of the our SimpleITK Lua example.
+The result is similar to, although not the same as the C Sharp produced image.
+They are different because the image intensities are not scaled in the same manner.</p>
+<div class="figure" id="id13">
+<img alt="../_images/SimpleITK_visual_guide_step05_lua_03.png" src="../_images/SimpleITK_visual_guide_step05_lua_03.png" />
+<p class="caption"><span class="caption-text">Lua Derivative image</span></p>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -55,12 +400,19 @@
 </a>
 </p>
 <h3><a href="../index.html">Table Of Contents</a></h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing SimpleITK</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Build Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image.html">Image Basics</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="build.html">Build Instructions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="unix.html">Building SimpleITK</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visual guide to building on Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java.html">Visual guide to SimpleITK with Java</a></li>
+<li class="toctree-l2"><a class="reference internal" href="csharp.html">Visual guide to SimpleITK with CSharp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
 </ul>
 

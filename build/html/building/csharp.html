@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Guide to SimpleITK in C Sharp &#8212; SimpleITK 0.11 documentation</title>
+    <title>Visual guide to SimpleITK with CSharp &#8212; SimpleITK 0.11 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -29,8 +29,8 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Image Basics" href="../image.html" />
-    <link rel="prev" title="Guide to SimpleITK in Java" href="java.html" />
+    <link rel="next" title="User Guide" href="../user_guide.html" />
+    <link rel="prev" title="Visual guide to SimpleITK with Java" href="java.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -43,8 +43,92 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="guide-to-simpleitk-in-c-sharp">
-<h1>Guide to SimpleITK in C Sharp<a class="headerlink" href="#guide-to-simpleitk-in-c-sharp" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="visual-guide-to-simpleitk-with-csharp">
+<h1>Visual guide to SimpleITK with CSharp<a class="headerlink" href="#visual-guide-to-simpleitk-with-csharp" title="Permalink to this headline">¶</a></h1>
+<p>In this guide we will show how to setup a C# project in Microsoft Visual Studio 2012 which uses the available built binaries for SimpleITK. The same steps and options are needed for the other versions of Visual Studio.</p>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#download" id="id9">Download</a></li>
+<li><a class="reference internal" href="#adding-c-simpleitk-to-a-project" id="id10">Adding C# SimpleITK to a Project</a></li>
+<li><a class="reference internal" href="#selecting-architecture" id="id11">Selecting Architecture</a></li>
+<li><a class="reference internal" href="#adding-managed-library" id="id12">Adding Managed Library</a></li>
+<li><a class="reference internal" href="#adding-native-library" id="id13">Adding Native Library</a></li>
+<li><a class="reference internal" href="#building-an-example" id="id14">Building an Example</a></li>
+</ul>
+</div>
+<div class="section" id="download">
+<h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>
+<p>Binary downloads are readily available for C# for Microsoft Visual Studio. They are available on <a class="reference external" href="https://sourceforge.net/projects/simpleitk/files/SimpleITK/">SourceForge</a>.</p>
+<dl class="docutils">
+<dt>Download the correct binary for you architecture you are going to target.</dt>
+<dd>C# for SimpleITK has two components: Native and Managed. The native code contains the SimpleITK C++ library and is compiled for the particular architecture. There is the &#8220;win32&#8221; for the Intel x86 32-bit architecture, and the &#8220;win64&#8221; for the Intel x64 architecture. The correct architecture needs to be chosen.</dd>
+<dt>Unzip the downloaded zip file into your &#8220;Documents&#8221; folder.</dt>
+<dd>Inside you will find two &#8220;dll&#8221; files: &#8220;SimpleITKCSharpManaged.dll&#8221; and &#8220;SimpleITKCSharpNative.dll&#8221;, as well as some documentation files.</dd>
+</dl>
+<div class="figure" id="id1">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig1.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig1.PNG" />
+<p class="caption"><span class="caption-text">Download an unzip the CSharp distribution.</span></p>
+</div>
+</div>
+<div class="section" id="adding-c-simpleitk-to-a-project">
+<h2>Adding C# SimpleITK to a Project<a class="headerlink" href="#adding-c-simpleitk-to-a-project" title="Permalink to this headline">¶</a></h2>
+<p>We will start off with a new C# console solution.</p>
+<p>This is created by selecting &#8220;File-&gt;New-&gt;Project&#8221;, then selecting under Templates &#8220;Visual C#&#8221; and then choosing the &#8220;Console Application&#8221;.</p>
+<div class="figure" id="id2">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig2.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig2.PNG" />
+<p class="caption"><span class="caption-text">Create a C# Console Application.</span></p>
+</div>
+</div>
+<div class="section" id="selecting-architecture">
+<h2>Selecting Architecture<a class="headerlink" href="#selecting-architecture" title="Permalink to this headline">¶</a></h2>
+<p>The SimpleITK binary only supports a single architecture platform. Your project should be configured to match that same platform.</p>
+<p>By default, in the Toolbar &#8220;Debug&#8221; is selected for the Solution Configuration and &#8220;Any CPU&#8221; is selected for the Solution Platform, this needs to be changed.</p>
+<div class="figure" id="id3">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig3a.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig3a.PNG" />
+<p class="caption"><span class="caption-text">The default configuration and platform in the toolbar.</span></p>
+</div>
+<p>Bring up the &#8220;Configuration Manager&#8221; dialog from the menu &#8220;BUILD-&gt;Configuration Manger...&#8221;.</p>
+<p>The architecture of the SimpleITK binary needs to be added, and the &#8220;Any CPU&#8221; architecture needs to be removed. This needs to be done for both the &#8220;Active solution platforms&#8221; and the &#8220;Platform&#8221;.</p>
+<div class="figure" id="id4">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig3b.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig3b.PNG" />
+<p class="caption"><span class="caption-text">The Configuration Manager.</span></p>
+</div>
+</div>
+<div class="section" id="adding-managed-library">
+<h2>Adding Managed Library<a class="headerlink" href="#adding-managed-library" title="Permalink to this headline">¶</a></h2>
+<p>From the menu bar select &#8220;PROJECT-&gt;Add Reference...&#8221; to bring up the Reference Manager. Click &#8220;Browse...&#8221; and navigate the file system to unzip &#8220;SimpleITKCSharpManaged.dll&#8221; from the binary download, then click OK to add.</p>
+<div class="figure" id="id5">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig4.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig4.PNG" />
+<p class="caption"><span class="caption-text">Adding managed library as reference.</span></p>
+</div>
+</div>
+<div class="section" id="adding-native-library">
+<h2>Adding Native Library<a class="headerlink" href="#adding-native-library" title="Permalink to this headline">¶</a></h2>
+<p>From the menu bar select &#8220;PROJECT-&gt;Add Existing Item...&#8221;. Select &#8220;Executable Files&#8221; for the extension type. Then navigate the file system to the unzipped &#8220;SimpleITKCSharpNative.dll&#8221; file from the binary download.
+<strong>Important</strong>: In the &#8220;Add&#8221; button&#8217;s pull down menu select &#8220;Add As Link&#8221;.</p>
+<div class="figure" id="id6">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig5a.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig5a.PNG" />
+<p class="caption"><span class="caption-text">Adding Native Library</span></p>
+</div>
+<p>In the Solution Explorer right click on the &#8220;SimpleITKCSharpNative.dll&#8221;, and select &#8220;Properties&#8221;.</p>
+<p>Then for &#8220;Build Action&#8221;, choose &#8220;Content&#8221;, and &#8220;Copy to OutputDirectory&#8221; choose &#8220;Copy always&#8221;.</p>
+<div class="figure" id="id7">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig5b.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig5b.PNG" />
+<p class="caption"><span class="caption-text">Configuring properties of native library.</span></p>
+</div>
+</div>
+<div class="section" id="building-an-example">
+<h2>Building an Example<a class="headerlink" href="#building-an-example" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have configured the project, let up copy a basic SimpleITK example to compile and run.
+The <a class="reference external" href="https://github.com/SimpleITK/SimpleITK/blob/master/Examples/CSharp/SimpleGaussian.cs">SimpleGaussian in C#</a> is a simple one to test our configuration. This can just be copied and pasted into the code editor.</p>
+<p>Then from the file menu &#8220;BUILD-&gt;Build Solution&#8221; can be selected.</p>
+<p>If all the steps were followed correctly you should now have an executable which can be run from the command line or from within Visual Studio with the appropriate arguments provided.</p>
+<div class="figure" id="id8">
+<img alt="../_images/SimpleITK_vs_csharp_visual_fig6.PNG" src="../_images/SimpleITK_vs_csharp_visual_fig6.PNG" />
+<p class="caption"><span class="caption-text">A successful build of the example.</span></p>
+</div>
+</div>
 </div>
 
 
@@ -62,12 +146,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing SimpleITK</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="build.html">Build Instructions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="unix.html">Building SimpleITK</a></li>
-<li class="toctree-l2"><a class="reference internal" href="java.html">Guide to SimpleITK in Java</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Guide to SimpleITK in C Sharp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linux.html">Visual guide to building on Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java.html">Visual guide to SimpleITK with Java</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visual guide to SimpleITK with CSharp</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../image.html">Image Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
 </ul>
 

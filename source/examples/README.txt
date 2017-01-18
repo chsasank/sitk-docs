@@ -5,5 +5,5 @@ Gallery
 
 General-purpose and introductory examples for SimpleITK.
 
-:doc:`../image` introduces conventions and basic image manipulations.
+:doc:`../user_guide` introduces conventions and basic image manipulations.
 

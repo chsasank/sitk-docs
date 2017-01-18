@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Guide to SimpleITK in Java &#8212; SimpleITK 0.11 documentation</title>
+    <title>Visual guide to SimpleITK with Java &#8212; SimpleITK 0.11 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -29,8 +29,8 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Guide to SimpleITK in C Sharp" href="csharp.html" />
-    <link rel="prev" title="Building SimpleITK" href="unix.html" />
+    <link rel="next" title="Visual guide to SimpleITK with CSharp" href="csharp.html" />
+    <link rel="prev" title="Visual guide to building on Linux" href="linux.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -43,8 +43,108 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="guide-to-simpleitk-in-java">
-<h1>Guide to SimpleITK in Java<a class="headerlink" href="#guide-to-simpleitk-in-java" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="visual-guide-to-simpleitk-with-java">
+<h1>Visual guide to SimpleITK with Java<a class="headerlink" href="#visual-guide-to-simpleitk-with-java" title="Permalink to this headline">¶</a></h1>
+<p>Java and SimpleITK are a natural fit. Like the bindings of other languages wrapped by SimpleITK, SimpleITK&#8217;s Java bindings have a language-specific component (traditional Jar file), and a native component (native shared library). This combination requires a little more setup, but is largely transparent to the developer.</p>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#eclipse-setup" id="id3">Eclipse Setup</a></li>
+<li><a class="reference internal" href="#gaussianexample" id="id4">GaussianExample</a></li>
+<li><a class="reference internal" href="#adding-simpleitk-to-the-build-path" id="id5">Adding SimpleITK to the Build Path</a></li>
+<li><a class="reference internal" href="#configure-the-build-path-for-our-eclipse-project" id="id6">Configure the Build Path for our Eclipse project</a><ul>
+<li><a class="reference internal" href="#source-attachment" id="id7">Source attachment</a></li>
+<li><a class="reference internal" href="#javdoc-location" id="id8">Javdoc location</a></li>
+<li><a class="reference internal" href="#native-library-location" id="id9">Native library location</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#simpleitk-java-conventions" id="id10">SimpleITK Java Conventions</a></li>
+</ul>
+</div>
+<div class="section" id="eclipse-setup">
+<h2>Eclipse Setup<a class="headerlink" href="#eclipse-setup" title="Permalink to this headline">¶</a></h2>
+<p>Download <a class="reference external" href="http://www.eclipse.org/">Eclipse</a> and install it on the platform of your choice. Eclipse is a commonly used integrated development environment (IDE) for Java, and makes development, debugging and deployment particularly streamlined.</p>
+<p>The first step in developing for SimpleITK&#8217;s Java bindings is to create a new project in Eclipse. Simply choose File &#8211;&gt; New &#8211;&gt; Project..., choosing Java Project in the Eclipse project wizard dialog, and name the project as you like. In this example, our project is called SimpleITK Demo. Create a new class by choosing File &#8211;&gt; New &#8211;&gt; Class, or simply copy the code below and paste into the project item in the Package Explorer view and Eclipse will automatically create the class and hierarchy for you.</p>
+</div>
+<div class="section" id="gaussianexample">
+<h2>GaussianExample<a class="headerlink" href="#gaussianexample" title="Permalink to this headline">¶</a></h2>
+<p>Here is our first class <code class="docutils literal"><span class="pre">Code/GaussianExample.java</span></code>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">org.itk.simple.example</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.itk.simple.Image</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.itk.simple.SimpleITK</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GaussianExample</span> <span class="o">{</span>
+
+        <span class="cm">/**</span>
+<span class="cm">         * @param args</span>
+<span class="cm">         */</span>
+        <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+                <span class="k">if</span> <span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">length</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Usage: &#39;Gaussian &lt;input&gt; &lt;output&gt;&#39;&quot;</span><span class="o">);</span>
+                        <span class="n">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Starting to blur &quot;</span> <span class="o">+</span> <span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+                <span class="c1">// Grab a file</span>
+                <span class="n">Image</span> <span class="n">image</span> <span class="o">=</span> <span class="n">SimpleITK</span><span class="o">.</span><span class="na">readImage</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+                <span class="n">Image</span> <span class="n">output</span> <span class="o">=</span> <span class="n">SimpleITK</span><span class="o">.</span><span class="na">discreteGaussian</span><span class="o">(</span><span class="n">image</span><span class="o">);</span>
+                <span class="n">SimpleITK</span><span class="o">.</span><span class="na">writeImage</span><span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Finished blurring, writing to &quot;</span> <span class="o">+</span> <span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
+
+        <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>If Eclipse is working as expected, you should see errors on lines 19-21. These errors occurs because we have not told Eclipse where to find SimpleITK&#8217;s jar file.</p>
+</div>
+<div class="section" id="adding-simpleitk-to-the-build-path">
+<h2>Adding SimpleITK to the Build Path<a class="headerlink" href="#adding-simpleitk-to-the-build-path" title="Permalink to this headline">¶</a></h2>
+<p>Right click on the project in the Package Explorer view and choose Build Path &#8211;&gt; Configure Build Path....</p>
+<div class="figure" id="id1">
+<img alt="../_images/ChangeBuildPath.dropshadow.png" src="../_images/ChangeBuildPath.dropshadow.png" />
+<p class="caption"><span class="caption-text">Change Build Path</span></p>
+</div>
+</div>
+<div class="section" id="configure-the-build-path-for-our-eclipse-project">
+<h2>Configure the Build Path for our Eclipse project<a class="headerlink" href="#configure-the-build-path-for-our-eclipse-project" title="Permalink to this headline">¶</a></h2>
+<p>In the Properties dialog, click on Add External JARs... and navigate to the SimpleITK jar file. When selected, click the down arrow to expose the options for the jar.</p>
+<div class="figure" id="id2">
+<img alt="../_images/BuildPathSettings.dropshadow.png" src="../_images/BuildPathSettings.dropshadow.png" />
+<p class="caption"><span class="caption-text">SimpleITK jar configuration</span></p>
+</div>
+<p>The three options of interest are: Source attachment, Javdoc location and Native library location.</p>
+<div class="section" id="source-attachment">
+<h3>Source attachment<a class="headerlink" href="#source-attachment" title="Permalink to this headline">¶</a></h3>
+<p>The Source attachment specifies where the source code for the SimpleITK jar file resides. In our case, it is distributed as <code class="docutils literal"><span class="pre">simpleitk-source.x.x.x.jar</span></code> where <code class="docutils literal"><span class="pre">x.x.x</span></code> is the version number of SimpleITK. The source attachment is useful for debugging the SimpleITK library, if necessary, because it allows the debugger to step through classes provided in the SimpleITK jar file. This setting is optional.</p>
+</div>
+<div class="section" id="javdoc-location">
+<h3>Javdoc location<a class="headerlink" href="#javdoc-location" title="Permalink to this headline">¶</a></h3>
+<p>The Javadoc location is also optional, but extremely helpful in developing with Java. Having Javadoc available provides Eclipse with in-line documentation for each function, if provided. We highly recommend supplying the Javadoc location to Eclipse.</p>
+</div>
+<div class="section" id="native-library-location">
+<h3>Native library location<a class="headerlink" href="#native-library-location" title="Permalink to this headline">¶</a></h3>
+<p>The last option, Native library location is required. Because SimpleITK is a C++ library, all functionality is provided through the JNI (Java Native Interface) specification. When the SimpleITK classes are loaded, a static block loads the native library to provide all the functionality to Java. This option tells Eclipse where to search for the library; without it a <code class="docutils literal"><span class="pre">UnsatisfiedLinkError</span></code> is thrown:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Exception</span> <span class="n">in</span> <span class="n">thread</span> <span class="s">&quot;main&quot;</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">UnsatisfiedLinkError</span><span class="o">:</span> <span class="n">no</span> <span class="n">SimpleITKJava</span> <span class="n">in</span> <span class="n">java</span><span class="o">.</span><span class="na">library</span><span class="o">.</span><span class="na">path</span>
+        <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">ClassLoader</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="n">ClassLoader</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">1758</span><span class="o">)</span>
+        <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">loadLibrary0</span><span class="o">(</span><span class="n">Runtime</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">823</span><span class="o">)</span>
+        <span class="n">at</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">loadLibrary</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">1045</span><span class="o">)</span>
+        <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">itk</span><span class="o">.</span><span class="na">simple</span><span class="o">.</span><span class="na">SimpleITKJNI</span><span class="o">.&lt;</span><span class="n">clinit</span><span class="o">&gt;(</span><span class="n">SimpleITKJNI</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">62</span><span class="o">)</span>
+        <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">itk</span><span class="o">.</span><span class="na">simple</span><span class="o">.</span><span class="na">SimpleITK</span><span class="o">.</span><span class="na">readImage</span><span class="o">(</span><span class="n">SimpleITK</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">33</span><span class="o">)</span>
+        <span class="n">at</span> <span class="n">org</span><span class="o">.</span><span class="na">itk</span><span class="o">.</span><span class="na">simple</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">GaussianExample</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="n">GaussianExample</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">19</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Set the Native library location to the directory containing the platform specific JNI library, i.e. <code class="docutils literal"><span class="pre">libSimpleITKJava.jnilib</span></code> on Mac OSX, <code class="docutils literal"><span class="pre">libSimpleITKJava.so</span></code> on Linux and <code class="docutils literal"><span class="pre">SimpleITKJava.dll</span></code> on Windows. After providing the library location, our example code runs correctly. When running this example from the command line, the native library location needs to be specified to the JVM,
+e.g. <code class="docutils literal"><span class="pre">-Djava.library.path=/path/to/SimpleITKRuntime</span></code>.</p>
+</div>
+</div>
+<div class="section" id="simpleitk-java-conventions">
+<h2>SimpleITK Java Conventions<a class="headerlink" href="#simpleitk-java-conventions" title="Permalink to this headline">¶</a></h2>
+<p>The SimpleITK Java bindings closely follow the C++ conventions, i.e. each class contains the public member functions. However, the functional interface is handled differently in Java. In particular, every static Java function must belong to a class, unlike C++.</p>
+<p>In SimpleITK, the functional interface is contained in a class called <code class="docutils literal"><span class="pre">org.itk.simple.SimpleITK</span></code>. This class contains the functional interfaces as static member functions, i.e. <code class="docutils literal"><span class="pre">org.itk.simple.SimpleITK.readImage</span></code> as shown in the example.</p>
+<p>The naming conventions for all SimpleITK classes follows the C++ conventions, but member functions and the function interface follow the Java conventions of using CamelCase with the first letter lowercase. In Java, the C++ function <code class="docutils literal"><span class="pre">itk::simple::ReadImage</span></code> becomes <code class="docutils literal"><span class="pre">org.itk.simple.SimpleITK.readImage</span></code>.</p>
+</div>
 </div>
 
 
@@ -62,12 +162,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing SimpleITK</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="build.html">Build Instructions</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="unix.html">Building SimpleITK</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Guide to SimpleITK in Java</a></li>
-<li class="toctree-l2"><a class="reference internal" href="csharp.html">Guide to SimpleITK in C Sharp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linux.html">Visual guide to building on Linux</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visual guide to SimpleITK with Java</a></li>
+<li class="toctree-l2"><a class="reference internal" href="csharp.html">Visual guide to SimpleITK with CSharp</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../image.html">Image Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
 </ul>
 
