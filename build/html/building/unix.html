@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Building SimpleITK on Linux &#8212; SimpleITK 0.11 documentation</title>
+    <title>Building SimpleITK &#8212; SimpleITK 0.11 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -29,6 +29,8 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guide to SimpleITK in Java" href="java.html" />
+    <link rel="prev" title="Build Instructions" href="build.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -41,8 +43,264 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="building-simpleitk-on-linux">
-<h1>Building SimpleITK on Linux<a class="headerlink" href="#building-simpleitk-on-linux" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="building-simpleitk">
+<h1>Building SimpleITK<a class="headerlink" href="#building-simpleitk" title="Permalink to this headline">¶</a></h1>
+<p>In many cases, you do not need to build SimpleITK because of the pre-built binaries available (see <a class="reference internal" href="../installation.html"><span class="doc">Installing SimpleITK</span></a>). However there are several reasons you might prefer to build SimpleITK from source:</p>
+<ul class="simple">
+<li>The binary files for your programming language of choice are not (yet) distributed</li>
+<li>You want the live on the bleeding edge by using the latest-and-greatest version of SimpleITK</li>
+<li>You want to wrap your own filters using the SimpleITK infrastructure</li>
+<li>You want to contribute to the development of SimpleITK</li>
+<li>To use the SimpleITK&#8217;s C++ interface and/or use ITK directly</li>
+</ul>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#prerequisites" id="id6">Prerequisites</a></li>
+<li><a class="reference internal" href="#recipes-formulas-short-cuts" id="id7">Recipes/ Formulas/ Short Cuts</a><ul>
+<li><a class="reference internal" href="#mac" id="id8">Mac</a></li>
+<li><a class="reference internal" href="#anaconda-python" id="id9">Anaconda Python</a></li>
+<li><a class="reference internal" href="#r" id="id10">R</a></li>
+<li><a class="reference internal" href="#lua" id="id11">Lua</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building" id="id12">Building</a><ul>
+<li><a class="reference internal" href="#obtaining-source-code" id="id13">Obtaining Source Code</a></li>
+<li><a class="reference internal" href="#building-using-superbuild" id="id14">Building using SuperBuild</a></li>
+<li><a class="reference internal" href="#building-manually" id="id15">Building manually</a></li>
+<li><a class="reference internal" href="#testing" id="id16">Testing</a></li>
+<li><a class="reference internal" href="#python-installation" id="id17">Python installation</a></li>
+<li><a class="reference internal" href="#r-installation" id="id18">R installation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#recommended-software" id="id19">Recommended Software</a><ul>
+<li><a class="reference internal" href="#fiji-fiji-is-just-imagej" id="id20">Fiji (Fiji is Just ImageJ)</a><ul>
+<li><a class="reference internal" href="#id3" id="id21">ImageJ</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ipython-and-jupyter" id="id22">iPython and Jupyter</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>To build SimpleITK you need:</p>
+<ul>
+<li><p class="first">A recent version of CMake &gt;= 3.3 with SSL support for https.</p>
+</li>
+<li><p class="first">A supported <a class="reference internal" href="../faq.html"><span class="doc">compiler</span></a>.</p>
+</li>
+<li><p class="first">To use the latest developmental version, source code can be downloaded with git &gt;= 1.65</p>
+<blockquote>
+<div><ul class="simple">
+<li>Git is required if building SimpleITK using &#8220;SuperBuild&#8221; (see below) to automatically download the matching version of ITK and SWIG</li>
+<li>Windows users may prefer msysGit</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>It is recommended to have numpy installed when testing Python bindings.</p>
+</div>
+<div class="section" id="recipes-formulas-short-cuts">
+<h2>Recipes/ Formulas/ Short Cuts<a class="headerlink" href="#recipes-formulas-short-cuts" title="Permalink to this headline">¶</a></h2>
+<p>For some environments we have short cuts, scripts, for automated building of SimpleITK.</p>
+<div class="section" id="mac">
+<h3>Mac<a class="headerlink" href="#mac" title="Permalink to this headline">¶</a></h3>
+<p>On the Mac, with the <a class="reference external" href="http://brew.sh/">Homebrew</a> package manager, a SimpleITK formula is available: <a class="reference external" href="https://github.com/Homebrew/homebrew-science/blob/master/simpleitk.rb">https://github.com/Homebrew/homebrew-science/blob/master/simpleitk.rb</a> for multiple language wrappings.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># available install options can be listed using</span>
+brew options homebrew/science/simpleitk
+<span class="c1"># for example, you can install with java and lua support as follows</span>
+brew install homebrew/science/simpleitk --with-java --with-lua
+</pre></div>
+</div>
+</div>
+<div class="section" id="anaconda-python">
+<h3>Anaconda Python<a class="headerlink" href="#anaconda-python" title="Permalink to this headline">¶</a></h3>
+<p>For the Anaconda Python distribution: The <a class="reference external" href="http://conda.pydata.org/docs/building/recipe.html">recipe</a> for the SimpleITK build is in the official <a class="reference external" href="https://github.com/conda/conda-recipes">conda-recipe</a> repository.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># get the recipe</span>
+git clone https://github.com/conda/conda-recipes.git
+<span class="nb">cd</span> conda-recipes/python
+<span class="c1"># build with your default Python (likely 2.7)</span>
+conda build simpleitk
+<span class="c1"># or build with 3.x</span>
+<span class="nv">CONDA_PY</span><span class="o">=</span><span class="m">34</span> conda build simpleitk
+</pre></div>
+</div>
+</div>
+<div class="section" id="r">
+<h3>R<a class="headerlink" href="#r" title="Permalink to this headline">¶</a></h3>
+<p>For the R language you can use the devtools installer (currently only for Linux/OS X): This script will download, build and install SimpleITK into your R environment. Please modify the number of processors to use based on your system (in our example below we set it to six)</p>
+<div class="highlight-R"><div class="highlight"><pre><span></span>devtools<span class="o">::</span>install_github<span class="p">(</span><span class="s">&quot;SimpleITK/SimpleITKRInstaller&quot;</span><span class="p">,</span> args<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="s">&#39;--configure-vars=&quot;MAKEJ=6&quot;&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="lua">
+<h3>Lua<a class="headerlink" href="#lua" title="Permalink to this headline">¶</a></h3>
+<p>For the Lua language with the Luarocks module deployment system, a <a class="reference external" href="https://github.com/SimpleITK/SimpleITKLuaRock">SimpleITK rockspec</a> is available on github.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># get the rock spec</span>
+git clone https://github.com/SimpleITK/SimpleITKLuaRock.git
+<span class="nb">cd</span> SimpleITKLuaRock
+<span class="c1"># build and install the SimpleITK Lua module</span>
+luarocks install simpleitk-1.0-0.rockspec
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="building">
+<h2>Building<a class="headerlink" href="#building" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="obtaining-source-code">
+<h3>Obtaining Source Code<a class="headerlink" href="#obtaining-source-code" title="Permalink to this headline">¶</a></h3>
+<p>There are two options to obtain the SimpleITK source code:</p>
+<ol class="arabic simple">
+<li>Download a released version from the <a class="reference external" href="https://sourceforge.net/projects/simpleitk/">SimpleITK SourceForge page</a></li>
+<li>Download the latest development version using git:
+<code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">http://itk.org/SimpleITK.git</span></code></li>
+</ol>
+</div>
+<div class="section" id="building-using-superbuild">
+<h3>Building using SuperBuild<a class="headerlink" href="#building-using-superbuild" title="Permalink to this headline">¶</a></h3>
+<p>After downloading SimpleITK&#8217;s source code we STRONGLY recommend to run cmake on the SuperBuild subdirectory of SimpleITK. Execute the following commands in the parent of the SimpleITK source directory to configure the SuperBuild:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir SimpleITK-build
+<span class="nb">cd</span> SimpleITK-build
+cmake ../SimpleITK/SuperBuild
+</pre></div>
+</div>
+<p>The SuperBuild will automatically download and build the matching version of ITK and SWIG needed to compile SimpleITK. Additionally, it will set recommended compilation flags to minimize the size of the library and enable support for large libraries. This is the recommended way to build SimpleITK and is easiest.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you get an error message saying that ITK_DIR is not set then, you did not correctly point cmake to the SuperBuild sub-directory. Please erase your binary directory, and point cmake to the SimpleITK/SuperBuild sub-directory.</p>
+</div>
+<p>The cmake configuration process should automatically find supported languages and enable SimpleITK wrapping for them. To manually enable a language toggle the appropriate WRAP_LANGUAGE cmake variable to ON. Verify and/or correct the advanced cmake variables to the language specific executable, libraries and include directories. For example if you have multiple Python installations ensure that all related Python variable refer to the same versions.</p>
+<p>Then use your make utility or your cmake chosen build utility to build SimpleITK.
+SimpleITK takes a while to build.</p>
+</div>
+<div class="section" id="building-manually">
+<h3>Building manually<a class="headerlink" href="#building-manually" title="Permalink to this headline">¶</a></h3>
+<p>This is <strong>not</strong> the recommended way of building SimpleITK, but it can be useful if you want to use a system version of ITK and/or SWIG, or if you do not want to (or can not) use git (due to firewall, etc).</p>
+<ol class="arabic">
+<li><p class="first">Setup the prerequisites as described above (i.e. CMake and supported compiler)</p>
+</li>
+<li><dl class="first docutils">
+<dt>Install the matching version of <a class="reference external" href="http://www.swig.org/">SWIG</a> &gt;= 3.0.5</dt>
+<dd><p class="first last">e.g. Windows users may install <a class="reference external" href="http://prdownloads.sourceforge.net/swig/swigwin-3.0.5.zip">swigwin-3.0.5</a></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Download the SimpleITK source code from the SourceForge page</p>
+</li>
+<li><dl class="first docutils">
+<dt>Download the matching version of ITK</dt>
+<dd><p class="first last">e.g. SimpleITK 0.10.0 uses <a class="reference external" href="http://sourceforge.net/projects/itk/files/itk/4.10/InsightToolkit-4.10.0.tar.gz/download">ITK 4.10.0 (tag v4.10.0)</a></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Configure ITK using CMake</dt>
+<dd><p class="first last">BUILD_EXAMPLES=OFF, BUILD_TESTING=OFF, BUILD_SHARED_LIBS=OFF, <strong>ITK_USE_REVIEW=ON</strong></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Build ITK</dt>
+<dd><p class="first last">Be sure to note the build settings e.g. Release x64</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Configure SimpleITK using CMake</dt>
+<dd><p class="first last">Set ITK_DIR to the location of the ITK build location from the previous steps</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Build SimpleITK</dt>
+<dd><p class="first last">Be sure to configure the build settings exactly the same as ITK e.g. Release x64 and CXX_FLAGS</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+<div class="section" id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
+<p>After compilation the prudent thing to due is to test SimpleITK to ensure your build is stable and suitable for use and installation. The following commands execute the SimpleITK tests.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> SimpleITK-build/SimpleITK-build
+ctest
+</pre></div>
+</div>
+<p>On Windows you will need to specify configuration. Typically that would be the Release configuration, as such:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> SimpleITK-build/SimpleITK-build
+ctest -C Release
+</pre></div>
+</div>
+<p>If all tests fail, verify that you have the testing data in your source tree (the reason for the &#8220;&#8211;recursive&#8221; flag in the git command) AND that you have added the correct path to your <a href="#id1"><span class="problematic" id="id2">*</span></a>_LIBRARY_PATH.</p>
+</div>
+<div class="section" id="python-installation">
+<h3>Python installation<a class="headerlink" href="#python-installation" title="Permalink to this headline">¶</a></h3>
+<p>To install a built python package into the system Python, as root run:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> SimpleITK-build/Wrapping/Python
+python Packaging/setup.py install
+</pre></div>
+</div>
+<p>Alternatively, a Python virtual environment can be created and the distribution installed there. If you build the &#8220;dist&#8221; target a Python Wheel file (.whl) will be created in the &#8220;Wrapping/Python/dist&#8221; directory.</p>
+</div>
+<div class="section" id="r-installation">
+<h3>R installation<a class="headerlink" href="#r-installation" title="Permalink to this headline">¶</a></h3>
+<p>To install a built R package:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> SimpleITK-build/Wrapping/R/Packaging
+R CMD INSTALL SimpleITK
+</pre></div>
+</div>
+<p>This will install the R package &#8220;SimpleITK&#8221; in /usr/local as root or your local R installation directory.</p>
+<p>If you are working in a multi-user environment, and are considerate of your fellow users you can install the package in a local directory:</p>
+<ol class="arabic">
+<li><dl class="first docutils">
+<dt>Create a local directory where you will install your R packages</dt>
+<dd><p class="first last"><code class="docutils literal"><span class="pre">mkdir</span> <span class="pre">my_R_libs</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Add an environment variable to your .bashrc</dt>
+<dd><p class="first last"><code class="docutils literal"><span class="pre">export</span> <span class="pre">R_LIBS=&quot;/path_to/my_R_libs&quot;</span></code></p>
+</dd>
+</dl>
+</li>
+<li><p class="first">source your .bashrc and check the R library path, in an R shell &gt;.libPaths()</p>
+</li>
+<li><p class="first">install</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> SimpleITK-build/Wrapping/R/Packaging
+R CMD INSTALL -l /path_to/my_R_libs  SimpleITK
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="recommended-software">
+<h2>Recommended Software<a class="headerlink" href="#recommended-software" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fiji-fiji-is-just-imagej">
+<h3>Fiji (Fiji is Just ImageJ)<a class="headerlink" href="#fiji-fiji-is-just-imagej" title="Permalink to this headline">¶</a></h3>
+<p>SimpleITK has a built in function, <a class="reference external" href="https://itk.org/SimpleITKDoxygen/html/namespaceitk_1_1simple.html#ac8416e6e7f02dedfe8373b83dbea411d">itk::simple::Show()</a>, which can be used for viewing images in an interactive session.
+Currently, this function by default <code class="docutils literal"><span class="pre">Show</span></code> invokes <a class="reference external" href="https://fiji.sc/">Fiji</a> then <a class="reference external" href="http://rsbweb.nih.gov/ij/">ImageJ</a> to display images. ImageJ was chosen because it can handle all the image types that SimpleITK supports, even 3D vector images with n components.</p>
+<p>The Show function first searches the &#8220;PATH&#8221; environment variable, then additional standard locations are examined, if problems are encountered the correct path can be added to this environment variable and the <strong>&#8220;debugOn&#8221;</strong> option to <strong>&#8220;Show&#8221;</strong> flag set.</p>
+<div class="section" id="id3">
+<h4>ImageJ<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<p>If ImageJ is used then we recommend downloading a recent version of ImageJ from the <a class="reference external" href="http://rsbweb.nih.gov/ij/download.html">official home page</a>. Recent versions come with support for the <a class="reference external" href="http://nifti.nimh.nih.gov/nifti-1/">Nifti</a> ( <a href="#id4"><span class="problematic" id="id5">*</span></a>.nii ) file format, which SimpleITK uses to export to ImageJ.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Linux installation requires an additional step. The <code class="docutils literal"><span class="pre">Show</span></code> function searches for an executable named ImageJ or imagej, however the default tarball does not come with this file. Instead it comes with a file names <a class="reference external" href="http://imagej.nih.gov/ij/download/linux/unix-script.txt">script</a>. This file contains the installation instructions. In short the file should be renamed to &#8220;imagej&#8221; and the site specific variables for the installation location, and java must be set. Also consider the &#8220;newwindow&#8221; variable... Do you really want a new instance of ImageJ launched each time you use Show? Lastly, as the installation instructions indicate, the imagej wrapper should be in your path.</p>
+</div>
+</div>
+</div>
+<div class="section" id="ipython-and-jupyter">
+<h3>iPython and Jupyter<a class="headerlink" href="#ipython-and-jupyter" title="Permalink to this headline">¶</a></h3>
+<p>If you are using python, <a class="reference external" href="http://ipython.org/">ipython</a> with <a class="reference external" href="http://jupyter.org/">Jupyter</a> is terrific environment to perform interactive computing for image processing. With the addition of numpy and scipy, you&#8217;ll have a powerful interactive environment.</p>
+<p>We have instructional SimpleITK Jupyter Notebooks which can help you get started.</p>
+</div>
+</div>
 </div>
 
 
@@ -55,10 +313,15 @@
 </a>
 </p>
 <h3><a href="../index.html">Table Of Contents</a></h3>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing SimpleITK</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Build Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="build.html">Build Instructions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building SimpleITK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java.html">Guide to SimpleITK in Java</a></li>
+<li class="toctree-l2"><a class="reference internal" href="csharp.html">Guide to SimpleITK in C Sharp</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image Basics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
