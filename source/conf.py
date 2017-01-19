@@ -20,7 +20,7 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(1, os.path.abspath('./user_guide'))
+sys.path.insert(1, os.path.abspath('./user_guide_source'))
 
 # -- General configuration ------------------------------------------------
 
@@ -34,13 +34,14 @@ extensions = [
             'breathe',
              "sphinx.ext.mathjax",
 			       'sphinx_gallery.gen_gallery',
+             "sphinx.ext.todo"
              ]
 
 sphinx_gallery_conf = {
     # path to your examples scripts
-    'examples_dirs' : ['examples', 'user_guide'],
+    'examples_dirs' : ['examples', 'user_guide_source'],
     # path where to save gallery generated examples
-    'gallery_dirs'  : ['auto_examples', 'gen_notebooks']}
+    'gallery_dirs'  : ['auto_examples', 'user_guide']}
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -122,7 +123,7 @@ pygments_style = 'sphinx'
 #keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = False
+todo_include_todos = True
 
 
 # -- Options for HTML output ----------------------------------------------

@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Image Interpolation &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Transforms and Resampling" href="plot_resample.html" />
+    <link rel="prev" title="Function to show images" href="../myshow.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="image-interpolation">
+<span id="sphx-glr-user-guide-transforms-plot-interpolation-py"></span><h1>Image Interpolation<a class="headerlink" href="#image-interpolation" title="Permalink to this headline">¶</a></h1>
+<p>We demonstrate the different interpolators available in SimpleITK available for
+image resampling.  Their effect is demonstrated on the
+<a class="reference external" href="http://www.cs.cornell.edu/~srm/publications/Vis94-filters-abstract.html">Marschner-Lobb</a>
+image.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">myshow</span> <span class="kn">import</span> <span class="n">myshow</span>
+</pre></div>
+</div>
+<div class="section" id="marschner-lobb-image">
+<h2>Marschner-Lobb image<a class="headerlink" href="#marschner-lobb-image" title="Permalink to this headline">¶</a></h2>
+<p>Add formula for it here.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">marschner_lobb</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">f_M</span><span class="o">=</span><span class="mf">6.0</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">PhysicalPointSource</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">sitkVectorFloat32</span><span class="p">,</span> <span class="p">[</span><span class="n">size</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
+                                   <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">size</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">imgx</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VectorIndexSelectionCast</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">imgy</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VectorIndexSelectionCast</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">imgz</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VectorIndexSelectionCast</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">imgx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">imgy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">pr</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cos</span><span class="p">((</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f_M</span><span class="p">)</span> <span class="o">*</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cos</span><span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Sin</span><span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">imgz</span><span class="p">)</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">pr</span><span class="p">))</span> <span class="o">/</span> \
+        <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">))</span>
+
+<span class="n">myshow</span><span class="p">(</span><span class="n">marschner_lobb</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Marschner-Lobb Image&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_interpolation_001.png" class="align-center" src="../../_images/sphx_glr_plot_interpolation_001.png" />
+</div>
+<div class="section" id="interpolations">
+<h2>Interpolations<a class="headerlink" href="#interpolations" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s use <code class="docutils literal"><span class="pre">Expand</span></code> to rescale image by a factor of 5 in all dimensions.</p>
+<p>Compare these interpolations with the image above.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ml</span> <span class="o">=</span> <span class="n">marschner_lobb</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">ml</span> <span class="o">=</span> <span class="n">ml</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">ml</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkNearestNeighbor</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;nearest neighbor&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkLinear</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkBSpline</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;b-spline&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkGaussian</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Gaussian&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkHammingWindowedSinc</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Hamming windowed sinc&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkBlackmanWindowedSinc</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Blackman windowed sinc&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkCosineWindowedSinc</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Cosine windowed sinc&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkWelchWindowedSinc</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Welch windowed sinc&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">Expand</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkLanczosWindowedSinc</span><span class="p">),</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Lanczos windowed sinc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_002.png"><img alt="../../_images/sphx_glr_plot_interpolation_002.png" src="../../_images/sphx_glr_plot_interpolation_002.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_003.png"><img alt="../../_images/sphx_glr_plot_interpolation_003.png" src="../../_images/sphx_glr_plot_interpolation_003.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_004.png"><img alt="../../_images/sphx_glr_plot_interpolation_004.png" src="../../_images/sphx_glr_plot_interpolation_004.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_005.png"><img alt="../../_images/sphx_glr_plot_interpolation_005.png" src="../../_images/sphx_glr_plot_interpolation_005.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_006.png"><img alt="../../_images/sphx_glr_plot_interpolation_006.png" src="../../_images/sphx_glr_plot_interpolation_006.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_007.png"><img alt="../../_images/sphx_glr_plot_interpolation_007.png" src="../../_images/sphx_glr_plot_interpolation_007.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_008.png"><img alt="../../_images/sphx_glr_plot_interpolation_008.png" src="../../_images/sphx_glr_plot_interpolation_008.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_009.png"><img alt="../../_images/sphx_glr_plot_interpolation_009.png" src="../../_images/sphx_glr_plot_interpolation_009.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_interpolation_010.png"><img alt="../../_images/sphx_glr_plot_interpolation_010.png" src="../../_images/sphx_glr_plot_interpolation_010.png" style="width: 123.13999999999999px; height: 123.13999999999999px;" /></a>
+</li>
+</ul>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  2.780 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_interpolation.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_interpolation.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_interpolation.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_interpolation.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../../index.html">
+  <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/user_guide/transforms/plot_interpolation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../../_sources/user_guide/transforms/plot_interpolation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

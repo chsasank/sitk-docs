@@ -45,6 +45,441 @@
             
   <div class="section" id="frequently-asked-questions">
 <h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<p>This page hosts frequently asked questions about SimpleITK, and their
+answers.</p>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#installation" id="id1">Installation</a><ul>
+<li><a class="reference internal" href="#why-do-i-get-an-error-about-a-missing-dynamic-library-when-running-simpleitk-with-python-on-windows" id="id2">Why do I get an error about a missing Dynamic Library when running SimpleITK with Python on windows?</a></li>
+<li><a class="reference internal" href="#i-am-using-the-binary-distribution-of-simpleitk-for-anaconda-why-do-i-get-an-error-about-libpng" id="id3">I am using the binary distribution of SimpleITK for Anaconda, why do I get an error about libpng?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-use" id="id4">How to Use</a><ul>
+<li><a class="reference internal" href="#what-filters-are-currently-available-in-simpleitk" id="id5">What filters are currently available in SimpleITK?</a></li>
+<li><a class="reference internal" href="#how-do-i-read-a-raw-image-into-simpleitk" id="id6">How do I read a RAW image into SimpleITK?</a></li>
+<li><a class="reference internal" href="#can-i-use-another-image-file-viewer-beside-imagej" id="id7">Can I use another image file viewer beside ImageJ?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-3d-slicer-to-view-my-images" id="id8">How can I use 3D Slicer to view my images?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-a-newer-java-with-imagej-on-mac-os-x" id="id9">How can I use a newer Java with ImageJ on Mac OS X?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#wrapping" id="id10">Wrapping</a><ul>
+<li><a class="reference internal" href="#python" id="id11">Python</a></li>
+<li><a class="reference internal" href="#tcl" id="id12">Tcl</a></li>
+<li><a class="reference internal" href="#java" id="id13">Java</a></li>
+<li><a class="reference internal" href="#c" id="id14">C#</a></li>
+<li><a class="reference internal" href="#r" id="id15">R</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compilation" id="id16">Compilation</a><ul>
+<li><a class="reference internal" href="#is-my-compiler-supported" id="id17">Is my compiler supported?</a><ul>
+<li><a class="reference internal" href="#committed-to-support" id="id18">Committed to Support</a></li>
+<li><a class="reference internal" href="#noted-problems" id="id19">Noted Problems</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#why-am-i-getting-a-compilation-error-on-osx-mavericks" id="id20">Why am I getting a compilation error on OSX Mavericks?</a></li>
+<li><a class="reference internal" href="#why-does-the-superbuild-fail-compiling-pcre-on-mac-os-x" id="id21">Why does the Superbuild fail compiling PCRE on Mac OS X?</a></li>
+<li><a class="reference internal" href="#do-i-need-to-download-an-option-package-for-tr1-support" id="id22">Do I need to download an option package for TR1 support?</a></li>
+<li><a class="reference internal" href="#do-i-need-to-download-an-optional-package-for-c99" id="id23">Do I need to download an optional package for C99?</a></li>
+<li><a class="reference internal" href="#how-do-i-build-with-visual-studio-2008" id="id24">How do I build with Visual Studio 2008?</a></li>
+<li><a class="reference internal" href="#what-configurations-on-windows-are-supported-for-building" id="id25">What Configurations on Windows are Supported For Building?</a></li>
+<li><a class="reference internal" href="#why-are-all-of-the-configurations-not-supported-on-windows" id="id26">Why are all of the configurations not supported on Windows?</a></li>
+<li><a class="reference internal" href="#where-is-the-test-data" id="id27">Where is the Test Data?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="why-do-i-get-an-error-about-a-missing-dynamic-library-when-running-simpleitk-with-python-on-windows">
+<h3>Why do I get an error about a missing Dynamic Library when running SimpleITK with Python on windows?<a class="headerlink" href="#why-do-i-get-an-error-about-a-missing-dynamic-library-when-running-simpleitk-with-python-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>This error has been resolved with SimpleITK version 0.5.1 and should no
+longer occur. Upgrading to the latest SimpleITK is encouraged.</p>
+<p>This error occurs after you have downloaded the Windows SimpleITK
+binaries when you are running python and try to import SimpleITK. There
+is an error about a missing DLL on Windows when you don&#8217;t have Visual
+Studio 10 and no other application has installed certain libraries
+before. You will need to download the Visual Studio 10 redistribution
+libraries. The libraries are available for download
+<a class="reference external" href="http://www.microsoft.com/download/en/details.aspx?id=5555">here</a>.</p>
+</div>
+<div class="section" id="i-am-using-the-binary-distribution-of-simpleitk-for-anaconda-why-do-i-get-an-error-about-libpng">
+<h3>I am using the binary distribution of SimpleITK for Anaconda, why do I get an error about libpng?<a class="headerlink" href="#i-am-using-the-binary-distribution-of-simpleitk-for-anaconda-why-do-i-get-an-error-about-libpng" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ne">ImportError</span><span class="p">:</span> <span class="n">dlopen</span><span class="p">(</span><span class="o">./</span><span class="n">_SimpleITK</span><span class="o">.</span><span class="n">so</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="n">Library</span> <span class="ow">not</span> <span class="n">loaded</span><span class="p">:</span> <span class="nd">@rpath</span><span class="o">/</span><span class="n">libpng15</span><span class="o">.</span><span class="mf">15.</span><span class="n">dylib</span>
+  <span class="n">Referenced</span> <span class="n">from</span><span class="p">:</span> <span class="o">.../</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">SimpleITK</span><span class="o">/</span><span class="n">_SimpleITK</span><span class="o">.</span><span class="n">so</span>
+  <span class="n">Reason</span><span class="p">:</span> <span class="n">image</span> <span class="ow">not</span> <span class="n">found</span>
+</pre></div>
+</div>
+<p>This can be resolved by installing the version of libpng that SimpleITK
+0.9 was built against:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda create -n sitkpy anaconda <span class="nv">libpng</span><span class="o">=</span>1.5
+<span class="nb">source</span> activate sitkpy <span class="c1">#unix/mac</span>
+<span class="c1"># for win: activate sitkpy</span>
+conda install -c https://conda.binstar.org/simpleitk/channel/main SimpleITK
+conda install <span class="nv">libpng</span><span class="o">=</span>1.5
+</pre></div>
+</div>
+<p>This set of commands:</p>
+<ul class="simple">
+<li>creates the virtual environment with our choice of libpng version,
+all other anaconda packages will be compatible with this version.</li>
+<li>activate the virtual environment.</li>
+<li>installs SimpleITK into the virtual environment (unfortunately this
+will automatically upgrade you to libpng 1.6).</li>
+<li>downgrades to libpng 1.5 so that library versions are compatible.</li>
+</ul>
+<p>We are currently investigating why the anaconda build system is not
+expressing version dependency for shared libraries. We how this will not
+be an issue with the next binary package.</p>
+</div>
+</div>
+<div class="section" id="how-to-use">
+<h2>How to Use<a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-filters-are-currently-available-in-simpleitk">
+<h3>What filters are currently available in SimpleITK?<a class="headerlink" href="#what-filters-are-currently-available-in-simpleitk" title="Permalink to this headline">¶</a></h3>
+<p>As of March 2014 we have approximately <strong>260 ITK image filters</strong> wrapped
+for SimpleITK. The <strong>filter coverage</strong>
+<a class="reference external" href="http://www.itk.org/SimpleITKDoxygen/html/Filter_Coverage.html">table</a>
+shows the current set of ITK filters in SimpleITK. Additionally the
+<a class="reference external" href="http://www.itk.org/SimpleITKDoxygen/html/classes.html">Doxygen</a> can
+be looked at to determine if a filter is available.</p>
+</div>
+<div class="section" id="how-do-i-read-a-raw-image-into-simpleitk">
+<h3>How do I read a RAW image into SimpleITK?<a class="headerlink" href="#how-do-i-read-a-raw-image-into-simpleitk" title="Permalink to this headline">¶</a></h3>
+<p>In general raw image files are missing information. They do not contain
+the nessesary header information to describe the basic size and type for
+the data, so this format is intrinsically deficient. The
+<a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1RawImageIO.html">RawImageIO</a>
+class is not available in SimpleITK so there is no direct way to
+programmatically hard code this header information. The suggested way is
+to create a Meta image header file (*.mhd) which references the raw
+data file and describes the size and type of the data. The documentation
+on how to write a Meta image header can be found
+<a class="reference external" href="http://www.itk.org/Wiki/MetaIO/Documentation#Reading_a_Brick-of-Bytes_.28an_N-Dimensional_volume_in_a_single_file.29">here</a>.</p>
+<p>The following is a sample Meta image header file, perhaps of name
+sample.mhd:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">ObjectType</span> <span class="o">=</span> Image
+<span class="nv">NDims</span> <span class="o">=</span> 3
+<span class="nv">DimSize</span> <span class="o">=</span> 256 256 64
+<span class="nv">ElementType</span> <span class="o">=</span> MET_USHORT
+<span class="nv">ElementDataFile</span> <span class="o">=</span> image.raw    <span class="o">(</span>this tag must be last in a MetaImageHeader<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="can-i-use-another-image-file-viewer-beside-imagej">
+<h3>Can I use another image file viewer beside ImageJ?<a class="headerlink" href="#can-i-use-another-image-file-viewer-beside-imagej" title="Permalink to this headline">¶</a></h3>
+<p>By default when the <a class="reference external" href="http://www.itk.org/SimpleITKDoxygen/html/namespaceitk_1_1simple.html#a7bacfc4685cff93e46d7401865f9579e">Show
+function</a>
+is called, SimpleITK writes out a temporary image in Nifti format then
+launches <a class="reference external" href="http://rsbweb.nih.gov/ij/index.html">ImageJ</a>. The user can
+override the file format of the temporary file and/or the application
+used to handle that file.</p>
+<p>The temporary file format can be specified via the
+<strong>SITK_SHOW_EXTENSION</strong> environment variable. For example, if the user
+wanted to export a PNG file, on Linux it might look like this:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">SITK_SHOW_EXTENSION</span><span class="o">=</span><span class="s2">&quot;.png&quot;</span>
+<span class="nb">export</span> SITK_SHOW_EXTENSION
+</pre></div>
+</div>
+<p>Use of an extension unsupported by ITK results in an error message. For
+the supported image formats, here is the <a class="reference external" href="http://www.itk.org/Doxygen/html/group__IOFilters.html">ITK Image IO
+Filters</a>.</p>
+<p>The default display application for all image types is ImageJ. To
+override ImageJ with some other application, use the
+<strong>SITK_SHOW_COMMAND</strong> environment variable. For instance, on Unix
+systems, using GNOME&#8217;s image viewer eog would be:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">SITK_SHOW_EXTENSION</span><span class="o">=</span><span class="s2">&quot;.png&quot;</span>
+<span class="nb">export</span> SITK_SHOW_EXTENSION
+<span class="nv">SITK_SHOW_COMMAND</span><span class="o">=</span><span class="s2">&quot;eog&quot;</span>
+<span class="nb">export</span> SITK_SHOW_COMMAND
+</pre></div>
+</div>
+<p>To override the default display applications for only color or 3d
+images, there are the <strong>SITK_SHOW_COLOR_COMMAND</strong> and
+<strong>SITK_SHOW_3D_COMMAND</strong> environment variables.</p>
+<p>More details on the Show function, including use of the &#8220;%a&#8221; and &#8220;%f&#8221;
+tokens, is at the <a class="reference external" href="http://www.itk.org/SimpleITKDoxygen/html/namespaceitk_1_1simple.html#a7bacfc4685cff93e46d7401865f9579e">Show function Doxygen
+page</a>.</p>
+</div>
+<div class="section" id="how-can-i-use-3d-slicer-to-view-my-images">
+<h3>How can I use 3D Slicer to view my images?<a class="headerlink" href="#how-can-i-use-3d-slicer-to-view-my-images" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://slicer.org">3D Slicer</a> is a very powerful and popular
+application for visualization and medical image computing. The
+SITK_SHOW_COMMAND environment variable may be used to display images
+in Slicer instead of SimpleITK&#8217;s default viewer, ImageJ. The following
+are examples of what settings for SITK_SHOW_COMMAND might look like
+for Mac OS X, Linux and Windows to use Slicer.</p>
+<p>Mac OS X</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SITK_SHOW_COMMAND</span><span class="o">=</span>/Applications/Slicer.app/Contents/MacOS/Slicer
+</pre></div>
+</div>
+<p>Linux</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SITK_SHOW_COMMAND</span><span class="o">=</span>Slicer
+</pre></div>
+</div>
+<p>Windows</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">set</span> <span class="nv">SITK_SHOW_COMMAND</span><span class="o">=</span>:<span class="s2">&quot;c:\Program Files\Slicer 4.2.2-1\Slicer&quot;</span>
+</pre></div>
+</div>
+<p>The value of SITK_SHOW_COMMAND should be modified to point to wherever
+Slicer is installed. If you only want to use Slicer for volumetric 3D
+images, use the SITK_SHOW_3D_COMMAND environment variable instead of
+SITK_SHOW_COMMAND.</p>
+</div>
+<div class="section" id="how-can-i-use-a-newer-java-with-imagej-on-mac-os-x">
+<h3>How can I use a newer Java with ImageJ on Mac OS X?<a class="headerlink" href="#how-can-i-use-a-newer-java-with-imagej-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
+<p>By default on Mac OS X, the ImageJ application expects Java 6, which is
+old and unsupported. The latest supported version of Java (currently
+version 8u25) can be downloaded from <a class="reference external" href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Oracle&#8217;s Java Development kit
+page</a>.
+The following bash commands will set up the SITK_SHOW_COMMAND and
+SITK_SHOW_COLOR_COMMAND to invoke ImageJ&#8217;s jar file using the Java
+compiler.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">ij</span><span class="o">=</span><span class="s2">&quot;/Applications/ImageJ/&quot;</span>
+<span class="nv">ijcmd</span><span class="o">=</span><span class="s2">&quot;java -Dplugins.dir=</span>$<span class="s2">ij/plugins -jar </span>$<span class="s2">ij/ImageJ.app/Contents/Resources/Java/ij.jar&quot;</span>
+<span class="nb">export</span> <span class="nv">SITK_SHOW_COMMAND</span><span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">ijcmd -eval &#39;open( \&quot;%f\&quot; );&#39;&quot;</span>
+<span class="nb">export</span> <span class="nv">SITK_SHOW_COLOR_COMMAND</span><span class="o">=</span><span class="s2">&quot;</span>$<span class="s2">ijcmd -eval &#39;open( \&quot;%f\&quot; ); run(\&quot;Make Composite\&quot;, \&quot;display=Composite\&quot;);&#39;&quot;</span>
+</pre></div>
+</div>
+<p>The first lines set a variable pointing to the standard location for the
+ImageJ directory. If ImageJ is installed somewhere else, the line should
+be modified. The second line provides the command to launch ImageJ using
+the Java compiler. It includes flags that point to ImageJ&#8217;s plugiin
+directory and ImageJ&#8217;s ij.jar file.</p>
+<p>The SITK_SHOW_COMMAND tells SimpleITK.Show() to launch Java with
+ij.jar and then execute the open macro with an image file. The
+SITK_SHOW_COLOR_COMMAND does these same things and then executes the
+ImageJ &#8220;Make Composite&#8221; command to treat a multichannel image as a
+composite color image.</p>
+</div>
+</div>
+<div class="section" id="wrapping">
+<h2>Wrapping<a class="headerlink" href="#wrapping" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="tcl">
+<h3>Tcl<a class="headerlink" href="#tcl" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="java">
+<h3>Java<a class="headerlink" href="#java" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="c">
+<h3>C#<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="r">
+<h3>R<a class="headerlink" href="#r" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="compilation">
+<h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="is-my-compiler-supported">
+<h3>Is my compiler supported?<a class="headerlink" href="#is-my-compiler-supported" title="Permalink to this headline">¶</a></h3>
+<p>SimpleITK uses advanced C++ meta-programming to instantiate ITK&#8217;s Images
+and Filters. Addtionally, we use some headers which are included in the
+C99 and C++ TR1 extension. Therefore SimpleITK places additional
+requirements on the compiler beyond what is required for ITK. In
+principle we require C++x03 with C99&#8217;s &#8220;stdint.h&#8221; and TR1&#8217;s
+&#8220;functional&#8221;. If your compiler has those features it is likely able to
+be supported.</p>
+<p>The additional requirement for a supported compiler is that it is on the
+nightly dashboard. With this regard, the list of supported compilers is
+on the SimpleITK <a class="reference external" href="http://open.cdash.org/index.php?project=SimpleITK">SimpleITK
+dashboard</a>. We
+welcome user contributions to the nightly dashboard to expand the list
+of supported compilers.</p>
+<div class="section" id="committed-to-support">
+<h4>Committed to Support<a class="headerlink" href="#committed-to-support" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>GCC 4.2-4.7</li>
+<li>Visual Studio 2008 with Service Pack 1 (VS9)</li>
+<li>Visual Studio 2012 (VS10) ( including Express )</li>
+<li>Visual Studio 2012 (VS11)</li>
+</ul>
+</div>
+<div class="section" id="noted-problems">
+<h4>Noted Problems<a class="headerlink" href="#noted-problems" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>Compiling on a MS Windows 32-bit OS with static libraries is not
+supported due to lack of memory.</li>
+<li>With SimpleITK release 0.4.0, Visual Studio 2008 was not compiling.
+This problem has since been remedied in the development branch on
+April 18th, 2012.</li>
+<li>With SimpleITK release 0.7.0, Visual Studio 2008 is not able to
+compile all wrapped languages at the same time, it&#8217;s recommenced to
+choose one at a time.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="why-am-i-getting-a-compilation-error-on-osx-mavericks">
+<h3>Why am I getting a compilation error on OSX Mavericks?<a class="headerlink" href="#why-am-i-getting-a-compilation-error-on-osx-mavericks" title="Permalink to this headline">¶</a></h3>
+<p>With SimpleITK &lt;=0.7 the following error occurred during compilation on
+Apple OSX 10.9 Mavericks with <strong>clang 5.0</strong>:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span>SimpleITK/Code/Common/include/sitkMemberFunctionFactoryBase.h:106:16:  error: no member named &#39;tr1&#39; in namespace &#39;std&#39;
+typedef std::tr1::function&lt; MemberFunctionResultType ( ) &gt; FunctionObjectType;
+~~~~~^
+</pre></div>
+</div>
+<p>With Xcode 5.0, Apple&#8217;s distributed version of clang (5.0) changed which
+implementation of the C++ Standard Library it uses by default. Previous
+versions of clang (4.2 and earlier) used <a class="reference external" href="http://gcc.gnu.org/libstdc++/">GNU&#8217;s
+libstdc++</a> , while clang 5.0 now uses
+<a class="reference external" href="http://libcxx.llvm.org">LLVM&#8217;s libc++</a>. SimpleITK 0.7 and earlier
+require certain features from <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B_Technical_Report_1">C++
+tr1</a> which
+are not implemented in LLVM&#8217;s libc++ but are available in GNU&#8217;s
+libstdc++.</p>
+<p>To build SimpleITK &lt;=0.7 with clang 5.0, you can configure the compiler
+to use GNU&#8217;s stdlibc++. This change must be done at the initial
+configuration:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cmake <span class="s2">&quot;-DCMAKE_CXX_FLAGS:STRING=-stdlib=libstdc++&quot;</span> ../SimpleITK/SuperBuild
+</pre></div>
+</div>
+<p>NOTE: If you already have a build directory which has been partially
+configured the contents must be deleted. The above line needs to be done
+for an initial configuration in an empty build directory. NOTE: This
+work around does not work when with the CMake &#8220;Xcode&#8221; generator. It is
+recommended to just use the default &#8220;Unix Makefiles&#8221; generator, to build
+SimpleITK, and get using SimpleITK, not building it.</p>
+<p>The following is a <strong>compatibility table for clang 5.0</strong>. It shows that
+the default of libc++ does not work with SimpleITK, while the other
+options do. The choice of which standard library to use and which C++
+language standard to use are independent.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="27%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Clang 5.0 compatibility</th>
+<th class="head">-stdlib=libc++</th>
+<th class="head">-stdlib=libstdc++</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>(c++03)</td>
+<td>FAIL</td>
+<td>OK</td>
+</tr>
+<tr class="row-odd"><td>-std=c++11</td>
+<td>OK (&gt;=0.8)</td>
+<td>OK</td>
+</tr>
+</tbody>
+</table>
+<p>For SimpleITK &gt;=0.8, support for the tr1 features migrated to C++11 has
+been improved with better feature detection, and the necessary flags are
+now automatically added. LLVM&#8217;s libc++ will now work if compiling with
+the C++11 standard by adding the flag &#8220;-std=c++11&#8221; in the initial
+configuration.</p>
+<p>To further complicate dependencies and interactions, some downloadable
+languages such as Java, or R, may be compiled against GNU&#8217;s libstdc++.
+This may cause a conflict in the types used in the interface resulting
+in compilation errors while wrapping the language.</p>
+</div>
+<div class="section" id="why-does-the-superbuild-fail-compiling-pcre-on-mac-os-x">
+<h3>Why does the Superbuild fail compiling PCRE on Mac OS X?<a class="headerlink" href="#why-does-the-superbuild-fail-compiling-pcre-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
+<p>If the Xcode command line tools are not properly set up on OS X, PCRE
+could fail to build in the Superbuild process.</p>
+<p>To install the command line developer tools enter the following:
+&#8216;&#8217;&#8216;xcode-select &#8211;install</p>
+<p>To reset the default command line tools path: &#8216;&#8217;&#8216;xcode-select &#8211;reset</p>
+</div>
+<div class="section" id="do-i-need-to-download-an-option-package-for-tr1-support">
+<h3>Do I need to download an option package for TR1 support?<a class="headerlink" href="#do-i-need-to-download-an-option-package-for-tr1-support" title="Permalink to this headline">¶</a></h3>
+<p>Visual Studio 2008 requires an additional download for TR1 support. This
+support is best provided with the Service Pack 1. There is a separate
+TR1 feature pack which can be downloaded, but it is no longer
+recommended since Service Pack 1 includes TR1 and numerous bug and
+performance improvements.</p>
+</div>
+<div class="section" id="do-i-need-to-download-an-optional-package-for-c99">
+<h3>Do I need to download an optional package for C99?<a class="headerlink" href="#do-i-need-to-download-an-optional-package-for-c99" title="Permalink to this headline">¶</a></h3>
+<p>SimpleITK will proved a &#8220;stdint.h&#8221; header if missing on the system.</p>
+</div>
+<div class="section" id="how-do-i-build-with-visual-studio-2008">
+<h3>How do I build with Visual Studio 2008?<a class="headerlink" href="#how-do-i-build-with-visual-studio-2008" title="Permalink to this headline">¶</a></h3>
+<p>Visual Studio 2008 is the oldest supported Microsoft development
+environment that SimpleITK supports. To build SimpleITK, certain
+features of C++TR1 are required. These features are best provided by the
+<a class="reference external" href="http://www.microsoft.com/download/en/details.aspx?id=23691">&#8220;Microsoft Visual Studio 2008 Service Pack
+1&#8221;</a> (or
+try this link
+<a class="reference external" href="http://www.microsoft.com/en-us/download/confirmation.aspx?id=10986">1</a>).
+Alternatively just the <a class="reference external" href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&amp;displaylang=en">Visual C++ 2008 Feature Pack
+Release</a>
+can be installed. Please note that all our dashboard machines now use
+SP1.</p>
+<p>Older versions of SimpleITK (&lt;0.7.0) requires a also required a
+separately downloaded stdint.h for this compiler. This is not
+automatically provided if needed. If it&#8217;s still needed the file can be
+downloaded
+<a class="reference external" href="http://msinttypes.googlecode.com/svn/trunk/stdint.h">here</a>. For
+64-bit Microsoft Windows it should be dragged with the GUI into the
+appropriate include path for the architecture.</p>
+</div>
+<div class="section" id="what-configurations-on-windows-are-supported-for-building">
+<h3>What Configurations on Windows are Supported For Building?<a class="headerlink" href="#what-configurations-on-windows-are-supported-for-building" title="Permalink to this headline">¶</a></h3>
+<p>There are quite a large number of configuration options available for
+the Windows platform. The following table is a guide line of what is
+regularly tested and confirmed to work or fail.</p>
+<p>INSERT TABLE LATER</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>&nbsp;</td>
+<td>Legend</td>
+</tr>
+<tr class="row-even"><td>Nightly</td>
+<td>This combination of options is nightly tested, and known to work.</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>This combinations has been manually tested, and is expected to work.</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>It is not known if this combinations of options will work.</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>This combination likely has problems, and is not recommended.</td>
+</tr>
+<tr class="row-even"><td>FAIL</td>
+<td>These options are known not to work.</td>
+</tr>
+</tbody>
+</table>
+<p>This table has been updated for the release branch, master, as of
+February 15th 2013.</p>
+</div>
+<div class="section" id="why-are-all-of-the-configurations-not-supported-on-windows">
+<h3>Why are all of the configurations not supported on Windows?<a class="headerlink" href="#why-are-all-of-the-configurations-not-supported-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>One of the following errors frequently occur when the set of
+configuration options fail:</p>
+<p><code class="docutils literal"><span class="pre">LINK&nbsp;:&nbsp;fatal&nbsp;error&nbsp;LNK1102:&nbsp;out&nbsp;of&nbsp;memory</span></code></p>
+<p><code class="docutils literal"><span class="pre">LINK&nbsp;:&nbsp;fatal&nbsp;error&nbsp;LNK1248:&nbsp;image&nbsp;size&nbsp;(80000010)&nbsp;exceeds&nbsp;maximum&nbsp;allowable&nbsp;size&nbsp;(80000000)</span></code></p>
+<p>These errors occur because of limitations in the compiler&#8217;s linker or
+the operating system. For 64-bit architectures the linker is still only
+32-bits on some Visual Studios. In certain configurations the linker can
+run out of memory. Also the Windows operating systems have a hard limit
+of 2GB for the size of libraries. For Debug mode configurations this
+limit can be encounted.</p>
+<p>In general building in Debug mode should not be necessary, unless you
+are trying to debug SimpleITK or ITK. This configuration produces
+libraries that are very large because the compiler must maintain symbols
+for all instantiated ITK classes and member functions for each template
+parameters that a class is instantiating.</p>
+</div>
+<div class="section" id="where-is-the-test-data">
+<h3>Where is the Test Data?<a class="headerlink" href="#where-is-the-test-data" title="Permalink to this headline">¶</a></h3>
+<p>The way testing data is obtained changed with SimpleITK 0.7. If you
+download the source tar-ball is should be included. If you have obtained
+the source code from the git repository, it should be downloaded as part
+of the build process.</p>
+</div>
+</div>
 </div>
 
 
@@ -61,9 +496,15 @@
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installing SimpleITK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building/build.html">Build Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Gallery</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wrapping">Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compilation">Compilation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
 

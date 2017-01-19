@@ -21,7 +21,7 @@ Contents
    overview
    installation
    building/build
-   user_guide/user_guide
+   user_guide/index
    auto_examples/index
    faq
    api

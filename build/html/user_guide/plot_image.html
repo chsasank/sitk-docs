@@ -1,0 +1,501 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Image Basics &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Function to show images" href="myshow.html" />
+    <link rel="prev" title="User Guide" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="image-basics">
+<span id="sphx-glr-user-guide-plot-image-py"></span><h1>Image Basics<a class="headerlink" href="#image-basics" title="Permalink to this headline">¶</a></h1>
+<p>Image class is basic container for image data in SimpleITK.
+It can hold 2 or 3 dimensional images and pixel can be either be a scalar or a vector.
+A RGB image for example, is a 2 dimensional image with 3 component vector pixel.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#construction" id="id1">Construction</a></li>
+<li><a class="reference internal" href="#pixel-types" id="id2">Pixel Types</a></li>
+<li><a class="reference internal" href="#images-and-physical-space" id="id3">Images and Physical Space</a><ul>
+<li><a class="reference internal" href="#transform-voxels-to-physical-space" id="id4">Transform voxels to physical space</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#accessing-pixels" id="id5">Accessing Pixels</a><ul>
+<li><a class="reference internal" href="#arrays-tensors" id="id6">Arrays/Tensors</a></li>
+<li><a class="reference internal" href="#slicing" id="id7">Slicing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#image-operations" id="id8">Image Operations</a></li>
+</ul>
+</div>
+<div class="section" id="construction">
+<h2>Construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h2>
+<p>There are a variety of ways to create an image.
+All images&#8217; initial value is well defined as zero</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">pixelID</span><span class="p">)</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">pixelID</span><span class="p">)</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">sizeVector</span><span class="p">,</span> <span class="n">pixelID</span><span class="p">)</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">sizeVector</span><span class="p">,</span> <span class="n">pixelID</span><span class="p">,</span> <span class="n">numberOfComponents</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For example, in python you can create a RGB image of size 128x64 as</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="n">image_RGB</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">([</span><span class="mi">128</span><span class="p">,</span><span class="mi">64</span><span class="p">],</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkVectorUInt8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pixel-types">
+<h2>Pixel Types<a class="headerlink" href="#pixel-types" title="Permalink to this headline">¶</a></h2>
+<p>The pixel type is represented as an enumerated type <code class="docutils literal"><span class="pre">PixelIDValueEnum</span></code> .
+The following is a table of the enumerated list.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">EnumValue</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkUInt8</span></code></td>
+<td>Unsigned 8 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkInt8</span></code></td>
+<td>Signed 8 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkUInt16</span></code></td>
+<td>Unsigned 16 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkInt16</span></code></td>
+<td>Signed 16 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkUInt32</span></code></td>
+<td>Unsigned 32 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkInt32</span></code></td>
+<td>Signed 32 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkUInt64</span></code></td>
+<td>Unsigned 64 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkInt64</span></code></td>
+<td>Signed 64 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkFloat32</span></code></td>
+<td>32 bit float</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkFloat64</span></code></td>
+<td>64 bit float</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkComplexFloat32</span></code></td>
+<td>complex number of 32 bit float</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkComplexFloat64</span></code></td>
+<td>complex number of 64 bit float</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkVectorUInt8</span></code></td>
+<td>Multi-component of unsigned 8 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkVectorInt8</span></code></td>
+<td>Multi-component of signed 8 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkVectorUInt16</span></code></td>
+<td>Multi-component of unsigned 16 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkVectorInt16</span></code></td>
+<td>Multi-component of signed 16 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkVectorUInt32</span></code></td>
+<td>Multi-component of unsigned 32 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkVectorInt32</span></code></td>
+<td>Multi-component of signed 32 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkVectorUInt64</span></code></td>
+<td>Multi-component of unsigned 64 bit integer</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkVectorInt64</span></code></td>
+<td>Multi-component of signed 64 bit integer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkVectorFloat32</span></code></td>
+<td>Multi-component of 32 bit float</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkVectorFloat64</span></code></td>
+<td>Multi-component of 64 bit float</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkLabelUInt8</span></code></td>
+<td>RLE label of unsigned 8 bit integers</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkLabelUInt16</span></code></td>
+<td>RLE label of unsigned 16 bit integers</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sitkLabelUInt32</span></code></td>
+<td>RLE label of unsigned 32 bit integers</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sitkLabelUInt64</span></code></td>
+<td>RLE label of unsigned 64 bit integers</td>
+</tr>
+</tbody>
+</table>
+<p>There is also <code class="docutils literal"><span class="pre">sitkUnknown</span></code>, which is used for undefined or erroneous pixel ID&#8217;s. It has a value of <code class="docutils literal"><span class="pre">-1</span></code>.
+The 64-bit integer types are not available on all distributions. When not available the value is <code class="docutils literal"><span class="pre">sitkUnknown</span></code>.</p>
+<p>You can get the type of pixel using
+<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image10GetPixelIDEv" title="itk::simple::Image::GetPixelID"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelID()</span></code></a>
+and its string representation using
+<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image22GetPixelIDTypeAsStringEv" title="itk::simple::Image::GetPixelIDTypeAsString"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelIDTypeAsString()</span></code></a></p>
+</div>
+<div class="section" id="images-and-physical-space">
+<h2>Images and Physical Space<a class="headerlink" href="#images-and-physical-space" title="Permalink to this headline">¶</a></h2>
+<p>The unique feature of SimpleITK (derived from ITK) as a toolkit for image manipulation and analysis is that it views <em>images as physical objects occupying a bounded region in physical space</em>.
+In addition images can have different spacing between pixels along each axis, and the axes are not necessarily orthogonal. The following figure illustrates these concepts.</p>
+<img alt="../_images/ImageOriginAndSpacing.png" src="../_images/ImageOriginAndSpacing.png" />
+<p>Each <a class="reference internal" href="../api.html#_CPPv2N3itk6simple5ImageE" title="itk::simple::Image"><code class="xref cpp cpp-class docutils literal"><span class="pre">Image</span></code></a> has following properties:</p>
+<dl class="docutils">
+<dt><strong>Pixel type</strong></dt>
+<dd><p class="first">Type of pixel/voxel. Refer to table above. In case of a vector image, number of components per pixel can be greater than 1. This is fixed on creation.</p>
+<p class="last">Can get pixel type through <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image10GetPixelIDEv" title="itk::simple::Image::GetPixelID"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelID()</span></code></a>.
+Number of components per pixel can be found by <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image29GetNumberOfComponentsPerPixelEv" title="itk::simple::Image::GetNumberOfComponentsPerPixel"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetNumberOfComponentsPerPixel()</span></code></a></p>
+</dd>
+<dt><strong>Size</strong></dt>
+<dd><p class="first">Number of pixels/voxels in each dimension. This quantity implicitly defines the image dimension.
+This is also fixed on creation.</p>
+<p class="last">Size of the image can be found by <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image7GetSizeEv" title="itk::simple::Image::GetSize"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetSize()</span></code></a> and dimension by <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image12GetDimensionEv" title="itk::simple::Image::GetDimension"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetDimension()</span></code></a></p>
+</dd>
+<dt><strong>Origin</strong></dt>
+<dd><p class="first">Coordinates of the pixel/voxel with index (0,0,0) in physical units (i.e. mm). Default is zero i.e. origin of physical space.</p>
+<p class="last"><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image9GetOriginEv" title="itk::simple::Image::GetOrigin"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetOrigin()</span></code></a> and
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image9SetOriginERKNSt6vectorIdEE" title="itk::simple::Image::SetOrigin"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetOrigin()</span></code></a> can be used to get and set origin respectively.</p>
+</dd>
+<dt><strong>Spacing</strong></dt>
+<dd><p class="first">Distance between adjacent pixels/voxels in each dimension given in physical units.
+Default is one i.e. (1 mm, 1 mm, 1 mm).</p>
+<p class="last"><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image10GetSpacingEv" title="itk::simple::Image::GetSpacing"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetSpacing()</span></code></a> and
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image10SetSpacingERKNSt6vectorIdEE" title="itk::simple::Image::SetSpacing"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetSpacing()</span></code></a> can be used to get and set spacing respectively.</p>
+</dd>
+<dt><strong>Direction Matrix</strong></dt>
+<dd><p class="first">Mapping/rotation between direction of the pixel/voxel axes and physical directions. Default is identity matrix. The matrix is passed as a 1D array in row-major form.</p>
+<p class="last"><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image12GetDirectionEv" title="itk::simple::Image::GetDirection"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetDirection()</span></code></a> and
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image12SetDirectionERKNSt6vectorIdEE" title="itk::simple::Image::SetDirection"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetDirection()</span></code></a> can be used to get and set direction matrix respectively.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All the transformations like rotation or affine transform are done on the underlying physical space. You can think of image of a view of this physical space.</p>
+</div>
+<p>Let&#8217;s illustrate this in python:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">downloaddata</span> <span class="kn">import</span> <span class="n">fetch_data</span> <span class="k">as</span> <span class="n">fdata</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/A1_grayT1.nrrd&quot;</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Pixel Type    {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">GetPixelID</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Size          {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Origin        {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">GetOrigin</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Spacing       {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">GetSpacing</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Direction     {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">GetDirection</span><span class="p">()))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">A1_grayT1</span><span class="o">.</span><span class="n">nrrd</span>
+<span class="n">Pixel</span> <span class="n">Type</span>    <span class="mi">8</span>
+<span class="n">Size</span>          <span class="p">(</span><span class="mi">288</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">208</span><span class="p">)</span>
+<span class="n">Origin</span>        <span class="p">(</span><span class="o">-</span><span class="mf">77.625</span><span class="p">,</span> <span class="o">-</span><span class="mf">107.625</span><span class="p">,</span> <span class="mf">119.625</span><span class="p">)</span>
+<span class="n">Spacing</span>       <span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
+<span class="n">Direction</span>     <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="transform-voxels-to-physical-space">
+<h3>Transform voxels to physical space<a class="headerlink" href="#transform-voxels-to-physical-space" title="Permalink to this headline">¶</a></h3>
+<p>Following equation can be used to convert voxel coordinates/indices to physical coordinates:</p>
+<div class="math">
+\[x = D.S.v + o\]</div>
+<p>where x is coordinate of the voxel in physical space, v is voxel index, o is origin, D is direction matrix and S is <em>diag</em> (spacing).</p>
+<p>These functions can be directly used to transform between voxel and physical space:</p>
+<ul class="simple">
+<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image39TransformContinuousIndexToPhysicalPointERKNSt6vectorIdEE" title="itk::simple::Image::TransformContinuousIndexToPhysicalPoint"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformContinuousIndexToPhysicalPoint()</span></code></a></li>
+<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image29TransformIndexToPhysicalPointERKNSt6vectorI7int64_tEE" title="itk::simple::Image::TransformIndexToPhysicalPoint"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformIndexToPhysicalPoint()</span></code></a></li>
+<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image39TransformPhysicalPointToContinuousIndexERKNSt6vectorIdEE" title="itk::simple::Image::TransformPhysicalPointToContinuousIndex"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformPhysicalPointToContinuousIndex()</span></code></a></li>
+<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image29TransformPhysicalPointToIndexERKNSt6vectorIdEE" title="itk::simple::Image::TransformPhysicalPointToIndex"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformPhysicalPointToIndex()</span></code></a></li>
+</ul>
+<p>Let&#8217;s try these out in python</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Point {} is voxel {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">pt</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">TransformPhysicalPointToIndex</span><span class="p">(</span><span class="n">pt</span><span class="p">)))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Voxel {} is point {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">idx</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">TransformIndexToPhysicalPoint</span><span class="p">(</span><span class="n">idx</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Point</span> <span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">voxel</span> <span class="p">(</span><span class="mi">146</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">109</span><span class="p">)</span><span class="o">.</span>
+<span class="n">Voxel</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">45</span><span class="p">)</span> <span class="ow">is</span> <span class="n">point</span> <span class="p">(</span><span class="o">-</span><span class="mf">43.875</span><span class="p">,</span> <span class="o">-</span><span class="mf">85.125</span><span class="p">,</span> <span class="mf">54.375</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="accessing-pixels">
+<h2>Accessing Pixels<a class="headerlink" href="#accessing-pixels" title="Permalink to this headline">¶</a></h2>
+<p>You can get the pixel values using one of
+<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image14GetPixelAsInt8ERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsInt8"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsInt8()</span></code></a>,
+<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image16GetPixelAsUInt32ERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsUInt32"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsUInt32()</span></code></a>,
+<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image15GetPixelAsFloatERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsFloat"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsFloat()</span></code></a>
+<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image16GetPixelAsDoubleERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsDouble"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsDouble()</span></code></a> etc.</p>
+<p>Similarly, you can set the pixel values using
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image14SetPixelAsInt8ERKNSt6vectorI8uint32_tEE6int8_t" title="itk::simple::Image::SetPixelAsInt8"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsInt8()</span></code></a>,
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image16SetPixelAsUInt32ERKNSt6vectorI8uint32_tEE8uint32_t" title="itk::simple::Image::SetPixelAsUInt32"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsUInt32()</span></code></a>,
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image15SetPixelAsFloatERKNSt6vectorI8uint32_tEEf" title="itk::simple::Image::SetPixelAsFloat"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsFloat()</span></code></a>
+<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image16SetPixelAsDoubleERKNSt6vectorI8uint32_tEEd" title="itk::simple::Image::SetPixelAsDouble"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsDouble()</span></code></a> etc.</p>
+<p>In dynamic type languages like python and lua, <code class="docutils literal"><span class="pre">GetPixel</span></code> and <code class="docutils literal"><span class="pre">SetPixel</span></code> are available.
+In python, you can also use pythonic indexing to get and set pixel values.</p>
+<p>For example</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span>
+<span class="c1"># These two mean the same</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Get pixels: {:.3f}, {:.3f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">GetPixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span>
+                                          <span class="n">image</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]))</span>
+
+<span class="c1"># These two mean the same</span>
+<span class="n">image</span><span class="o">.</span><span class="n">SetPixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+<span class="n">image</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.2</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Get</span> <span class="n">pixels</span><span class="p">:</span> <span class="mf">8.638</span><span class="p">,</span> <span class="mf">8.638</span>
+</pre></div>
+</div>
+<div class="section" id="arrays-tensors">
+<h3>Arrays/Tensors<a class="headerlink" href="#arrays-tensors" title="Permalink to this headline">¶</a></h3>
+<p>If you have <a class="reference external" href="http://www.numpy.org">numpy</a> library installed in python, you can convert images to arrays and vice versa using <code class="docutils literal"><span class="pre">GetArrayFromImage()</span></code> and <code class="docutils literal"><span class="pre">GetImageFromArray()</span></code>.
+Similarly, if you have <a class="reference external" href="http://torch.ch">torch</a> installed, you can use <code class="docutils literal"><span class="pre">GetTensorFromImage()</span></code> and <code class="docutils literal"><span class="pre">GetImageFromTensor()</span></code>.
+Numpy and torch are numerical computational libraries for python and lua respectively.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While converting from tensor/array to Image, remember to set the image&#8217;s origin, spacing, and possibly direction cosine matrix. The default values may not match the physical dimensions of your image.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Image access is in x,y,z order (image.GetPixel(x,y,z) or image[x,y,z]) with zero based indexing. Note that this is different from numpy or torch indexing which uses z, y, x order.</p>
+</div>
+<p>In numpy for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">sitkimg</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkFloat32</span><span class="p">)</span>
+<span class="n">sitkimg</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.5</span>
+<span class="n">npimg</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">sitkimg</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Size from SimpleITK: {}, numpy: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">sitkimg</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">npimg</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;npimg[1, 2, 3] = {}, npimg[3, 2, 1] = {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">npimg</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">npimg</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Size</span> <span class="kn">from</span> <span class="nn">SimpleITK</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">numpy</span><span class="p">:</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">npimg</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">npimg</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.5</span>
+</pre></div>
+</div>
+<p>In torch, indexing starts with 1:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span></span><span class="n">sitk</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">SimpleITK&#39;</span>
+<span class="n">sitkimg</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">Image</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">sitk</span><span class="p">.</span><span class="n">sitkFloat32</span><span class="p">)</span>
+<span class="n">sitkimg</span><span class="p">:</span><span class="n">SetPixel</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">},</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="n">thimg</span> <span class="o">=</span> <span class="n">sitk</span><span class="p">.</span><span class="n">GetTensorFromImage</span><span class="p">(</span><span class="n">sitkimg</span><span class="p">)</span>
+
+<span class="n">sitksize</span> <span class="o">=</span> <span class="n">sitkimg</span><span class="p">:</span><span class="n">GetSize</span><span class="p">()</span>
+<span class="n">thsize</span> <span class="o">=</span> <span class="n">thimg</span><span class="p">:</span><span class="n">size</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sitksize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sitksize</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sitksize</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1">-- prints 10 20 30</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">thsize</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">thsize</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">thsize</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>       <span class="c1">-- prints 30 20 10</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">thimg</span><span class="p">[{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">}],</span> <span class="n">thimg</span><span class="p">[{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">}],</span>
+                        <span class="n">thimg</span><span class="p">[{</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">}])</span>    <span class="c1">-- prints 0 0 1.5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="slicing">
+<h3>Slicing<a class="headerlink" href="#slicing" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref cpp cpp-func docutils literal"><span class="pre">Slice()</span></code> can be used to slice the image and a dimension can be collapsed with <code class="xref cpp cpp-func docutils literal"><span class="pre">Extract()</span></code>.
+In python, you can use pythonic slicing without having to use these:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="n">logo</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">fdata</span><span class="p">(</span><span class="s1">&#39;SimpleITK.jpg&#39;</span><span class="p">))</span>
+<span class="c1"># Brute force subsampling</span>
+<span class="n">logo_subsampled</span> <span class="o">=</span> <span class="n">logo</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+<span class="c1"># Get the sub-image containing the word Simple</span>
+<span class="n">simple</span> <span class="o">=</span> <span class="n">logo</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">115</span><span class="p">,:]</span>
+<span class="c1"># Get the sub-image containing the word Simple and flip it</span>
+<span class="n">simple_flipped</span> <span class="o">=</span> <span class="n">logo</span><span class="p">[</span><span class="mi">115</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
+
+<span class="c1"># display results</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">((</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">),</span> <span class="p">(</span><span class="n">ax3</span><span class="p">,</span> <span class="n">ax4</span><span class="p">))</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                             <span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                             <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">logo</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;logo&quot;</span><span class="p">)</span>
+
+<span class="n">ax2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">logo_subsampled</span><span class="p">))</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;logo_subsampled&quot;</span><span class="p">)</span>
+
+<span class="n">ax3</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">simple</span><span class="p">))</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;simple&quot;</span><span class="p">)</span>
+
+<span class="n">ax4</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">simple_flipped</span><span class="p">))</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">ax4</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;simple_flipped&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_image_001.png" class="align-center" src="../_images/sphx_glr_plot_image_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">SimpleITK</span><span class="o">.</span><span class="n">jpg</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="image-operations">
+<h2>Image Operations<a class="headerlink" href="#image-operations" title="Permalink to this headline">¶</a></h2>
+<p>SimpleITK supports basic arithmetic operations between images, <strong>taking into
+account their physical space</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+<span class="n">img2</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">img1</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+<span class="n">img1</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">img2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">img3</span> <span class="o">=</span> <span class="n">img1</span> <span class="o">+</span> <span class="n">img2</span>
+<span class="n">img4</span> <span class="o">=</span> <span class="n">img1</span> <span class="o">+</span> <span class="mi">72</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Test add: {} {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img3</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">img4</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="n">img2</span><span class="o">.</span><span class="n">SetOrigin</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="c1"># Following raises error as the images are not in the</span>
+<span class="c1"># same physical space</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">img5</span> <span class="o">=</span> <span class="n">img1</span> <span class="o">+</span> <span class="n">img2</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span>Test add: 40 82
+Exception thrown in SimpleITK Add: /nfs/Users/blowekamp/anaconda/conda-bld/work/build/ITK/Modules/Core/Common/include/itkImageToImageFilter.hxx:248:
+itk::ERROR: AddImageFilter(0x11793e800): Inputs do not occupy the same physical space!
+InputImage Origin: [0.0000000e+00, 0.0000000e+00], InputImage_1 Origin: [3.0000000e+00, 5.0000000e+00]
+        Tolerance: 1.0000000e-06
+</pre></div>
+</div>
+<p>Following are some of the pixel-wise operations that can be used with image,
+image pairs or image, scalar pairs:</p>
+<ul class="simple">
+<li>Addition <code class="docutils literal"><span class="pre">+</span></code></li>
+<li>Subtraction <code class="docutils literal"><span class="pre">-</span></code></li>
+<li>Multiplication <code class="docutils literal"><span class="pre">*</span></code></li>
+<li>Division <code class="docutils literal"><span class="pre">/</span></code></li>
+<li>Modulo <code class="docutils literal"><span class="pre">%</span></code></li>
+<li>Power <code class="docutils literal"><span class="pre">**</span></code></li>
+</ul>
+<p>Lot more operations like sine, cosine, exponentation etc. are also available.</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  2.486 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/plot_image.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_image.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/plot_image.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_image.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../index.html">
+  <img class="logo" src="../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/plot_image.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/user_guide/plot_image.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

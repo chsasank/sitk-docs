@@ -80,17 +80,17 @@ def myshow(img, title=None, margin=0.05, dpi=80):
         # take a z-slice
         nda = nda[nda.shape[0] // 2, :, :, :]
 
-    ysize = nda.shape[1]
-    xsize = nda.shape[0]
+    xsize = nda.shape[1]
+    ysize = nda.shape[0]
 
     # Make a figure big enough to accommodate an axis of xpixels by ypixels
     # as well as the ticklabels, etc...
-    figsize = (1 + margin) * ysize / dpi, (1 + margin) * xsize / dpi
+    figsize = (1 + margin) * xsize / dpi, (1 + margin) * ysize / dpi
 
     plt.figure(figsize=figsize, dpi=dpi, tight_layout=True)
     ax = plt.gca()
 
-    extent = (0, ysize * spacing[0], 0, xsize * spacing[1])
+    extent = (0, xsize * spacing[0], ysize * spacing[1], 0)
 
     t = ax.imshow(nda, extent=extent, interpolation=None)
 
@@ -105,7 +105,7 @@ def myshow(img, title=None, margin=0.05, dpi=80):
 myshow(sitk.Expand(img2, [2, 2]), title="Big Visibile Human Head")
 
 ##############################################################################
-# The ``myshow``function is really useful. We will build up on it for 3d
-# images(``myshow3d``) in the next guide.
+# The ``myshow`` function is really useful. We will build up on it for 3d
+# images( ``myshow3d`` ) in the next guide.
 # They have been copied into a "myshow.py" file so that they can be
 # imported into other guides.

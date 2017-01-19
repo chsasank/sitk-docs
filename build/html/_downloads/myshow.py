@@ -3,6 +3,9 @@ Function to show images
 =======================
 
 Functions created in guides for visualization in other guides.
+If you want to run the code from other guides, please download this file (by 
+clicking ``Download Python source code`` at the bottom of the page) and add it 
+to your python path.
 """
 import matplotlib.pyplot as plt
 import SimpleITK as sitk
@@ -29,17 +32,17 @@ def myshow(img, title=None, margin=0.05, dpi=80):
         # take a z-slice
         nda = nda[nda.shape[0] // 2, :, :, :]
 
-    ysize = nda.shape[1]
-    xsize = nda.shape[0]
+    xsize = nda.shape[1]
+    ysize = nda.shape[0]
 
     # Make a figure big enough to accommodate an axis of xpixels by ypixels
     # as well as the ticklabels, etc...
-    figsize = (1 + margin) * ysize / dpi, (1 + margin) * xsize / dpi
+    figsize = (1 + margin) * xsize / dpi, (1 + margin) * ysize / dpi
 
     plt.figure(figsize=figsize, dpi=dpi, tight_layout=True)
     ax = plt.gca()
 
-    extent = (0, ysize * spacing[0], 0, xsize * spacing[1])
+    extent = (0, xsize * spacing[0], ysize * spacing[1], 0)
 
     t = ax.imshow(nda, extent=extent, interpolation=None)
 

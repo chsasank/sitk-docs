@@ -8,3 +8,5 @@ source/auto_examples
 # Data
 Data
 .DS_Store
+#build
+build/doctrees
