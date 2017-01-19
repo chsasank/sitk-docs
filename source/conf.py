@@ -19,9 +19,8 @@ import shlex
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-
-sys.path.insert(0, os.path.abspath('../../sphinx-gallery'))
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(1, os.path.abspath('./user_guide'))
 
 # -- General configuration ------------------------------------------------
 
@@ -39,9 +38,9 @@ extensions = [
 
 sphinx_gallery_conf = {
     # path to your examples scripts
-    'examples_dirs' : 'examples',
+    'examples_dirs' : ['examples', 'user_guide'],
     # path where to save gallery generated examples
-    'gallery_dirs'  : 'auto_examples'}
+    'gallery_dirs'  : ['auto_examples', 'gen_notebooks']}
 
 
 # Add any paths that contain templates here, relative to this directory.

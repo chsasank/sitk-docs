@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+.DS_Store
+# generated documentation
+source/doxyxml
+source/gen_notebooks
+source/auto_examples
+# Data
+Data
+.DS_Store

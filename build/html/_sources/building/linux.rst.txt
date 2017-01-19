@@ -18,8 +18,8 @@ Why Linux?
 -  It has all the required tools
 -  Did I mention it's free?
 
-Step 1: Get Linux
------------------
+Get Linux
+---------
 
 The first step is to install a Linux distribution. Some popular ones
 are:
@@ -84,8 +84,8 @@ Again, there are heaps of tutorials:
 This guide uses Debian 7, but the steps are very similar for other Linux
 distributions.
 
-Step 2: Install build tools
----------------------------
+Install build tools
+-------------------
 
 The next step is to install the required build tools.
 
@@ -133,8 +133,8 @@ By default building SimpleITK produces the SimpleITK `C++ <http://en.wikipedia.o
 +---------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
 
 
-Step 3: Get SimpleITK source code
----------------------------------
+Get SimpleITK source code
+-------------------------
 The next step is to get the SimpleITK source code using git.
 Decide where you want to put the source code. I'm putting mine in my home directory:
 
@@ -152,15 +152,15 @@ Now download the SimpleITK source code, by entering the following command in the
 .. figure:: image/linux/SimpleITK_visual_guide_step03_02.png
      
      Get the SimpleITK source code using git
-                                                                 
+
 Now change to the SimpleITK directory:
 
 .. code-block:: bash
                                                                                                                                                     
 	cd SimpleITK
 
-Step 4: Build SimpleITK
------------------------
+Build SimpleITK
+---------------
 
 The next step is to start building.
 
@@ -203,8 +203,8 @@ You can now (optionally) check whether the build was successful:
 
 All (or at least most) of the tests should pass.
 
-Step 5: Use SimpleITK
----------------------
+Use SimpleITK
+-------------
 
 SimpleITK is available to a variety of languages. In this section we
 give simple example programs demonstrating the SimpleITK API in C Sharp

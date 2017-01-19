@@ -51,7 +51,7 @@ help:
 clean:
 	rm -rf $(BUILDDIR)/*
 	rm -rf source/auto_examples/
-
+	rm -rf source/gen_notebooks/
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo

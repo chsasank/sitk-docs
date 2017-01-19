@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Visualizing Segmentations &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Gallery" href="../../auto_examples/index.html" />
+    <link rel="prev" title="Visualizing 3D images" href="plot_vis3dimage.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="visualizing-segmentations">
+<span id="sphx-glr-gen-notebooks-visualization-plot-visseg-py"></span><h1>Visualizing Segmentations<a class="headerlink" href="#visualizing-segmentations" title="Permalink to this headline">¶</a></h1>
+<p>In previous guides, we&#8217;ve seen how to visualize 2d and 3d images.
+We&#8217;ve written functions <code class="docutils literal"><span class="pre">myshow</span></code> and <code class="docutils literal"><span class="pre">myshow3d</span></code> which we will be using in
+this guide.</p>
+<p>We will also look at the subtleties of working with image filters that require
+the input images&#8217; to be overlapping.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="kn">from</span> <span class="nn">downloaddata</span> <span class="kn">import</span> <span class="n">fetch_data</span> <span class="k">as</span> <span class="n">fdata</span>
+<span class="kn">from</span> <span class="nn">myshow</span> <span class="kn">import</span> <span class="n">myshow</span><span class="p">,</span> <span class="n">myshow3d</span>
+</pre></div>
+</div>
+<div class="section" id="labeloverlay-in-2d">
+<h2>LabelOverlay In 2D<a class="headerlink" href="#labeloverlay-in-2d" title="Permalink to this headline">¶</a></h2>
+<p>We start by loading a segmented image. As the segmentation is just an image
+with integral data, we can display the labels as we would any other image.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;cthead1.png&quot;</span><span class="p">))</span>
+<span class="n">img1_seg</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;2th_cthead1.png&quot;</span><span class="p">))</span>
+
+<span class="n">myshow</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;cthead1&quot;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">img1_seg</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Label Image as Grayscale&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_visseg_001.png"><img alt="../../_images/sphx_glr_plot_visseg_001.png" src="../../_images/sphx_glr_plot_visseg_001.png" style="width: 157.92px; height: 157.92px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_visseg_002.png"><img alt="../../_images/sphx_glr_plot_visseg_002.png" src="../../_images/sphx_glr_plot_visseg_002.png" style="width: 157.92px; height: 157.92px;" /></a>
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">cthead1</span><span class="o">.</span><span class="n">png</span>
+<span class="n">Fetching</span> <span class="mi">2</span><span class="n">th_cthead1</span><span class="o">.</span><span class="n">png</span>
+</pre></div>
+</div>
+<p>We can also map the scalar label image to a color image as shown below.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelToRGB</span><span class="p">(</span><span class="n">img1_seg</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Label Image as RGB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_visseg_003.png" class="align-center" src="../../_images/sphx_glr_plot_visseg_003.png" />
+<p>Most filters which take multiple images as arguments require that the images
+occupy the same physical space. That is the pixel you are operating must
+refer to the same location. Luckily for us our image and labels do occupy the
+same physical space, allowing us to overlay the segmentation onto the
+original image.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img1_seg</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Label Overlayed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_visseg_004.png" class="align-center" src="../../_images/sphx_glr_plot_visseg_004.png" />
+<p>We can also overlay the labels as contours.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">LabelContour</span><span class="p">(</span><span class="n">img1_seg</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_visseg_005.png" class="align-center" src="../../_images/sphx_glr_plot_visseg_005.png" />
+</div>
+<div class="section" id="labeloverlay-in-3d">
+<h2>LabelOverlay In 3D<a class="headerlink" href="#labeloverlay-in-3d" title="Permalink to this headline">¶</a></h2>
+<p>The Surgical Planning Laboratory at Brigham and Women&#8217;s Hospital has a wonderful
+<a class="reference external" href="http://www.spl.harvard.edu/publications/item/view/2037">Multi-modality MRI-based Atlas of the Brain</a> that we can use.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img_T1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/A1_grayT1.nrrd&quot;</span><span class="p">))</span>
+<span class="n">img_T2</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/A1_grayT2.nrrd&quot;</span><span class="p">))</span>
+<span class="n">img_labels</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/hncma-atlas.nrrd&quot;</span><span class="p">))</span>
+
+<span class="n">myshow</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;T1&#39;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">img_T2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;T2&#39;</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelToRGB</span><span class="p">(</span><span class="n">img_labels</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;lables&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_visseg_006.png"><img alt="../../_images/sphx_glr_plot_visseg_006.png" src="../../_images/sphx_glr_plot_visseg_006.png" style="width: 177.66px; height: 197.39999999999998px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_visseg_007.png"><img alt="../../_images/sphx_glr_plot_visseg_007.png" src="../../_images/sphx_glr_plot_visseg_007.png" style="width: 177.66px; height: 197.39999999999998px;" /></a>
+</li>
+<li><a class="first reference internal image-reference" href="../../_images/sphx_glr_plot_visseg_008.png"><img alt="../../_images/sphx_glr_plot_visseg_008.png" src="../../_images/sphx_glr_plot_visseg_008.png" style="width: 157.92px; height: 157.92px;" /></a>
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">A1_grayT1</span><span class="o">.</span><span class="n">nrrd</span>
+<span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">A1_grayT2</span><span class="o">.</span><span class="n">nrrd</span>
+<span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas</span><span class="o">.</span><span class="n">nrrd</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="physical-space-issues">
+<h2>Physical Space Issues<a class="headerlink" href="#physical-space-issues" title="Permalink to this headline">¶</a></h2>
+<p>Why doesn&#8217;t this work? The images do not overlap in physical space.</p>
+<p>All the functions in SimpleITK work on underlying physical space. Thefore,
+mismatch in physical space like image origin etc. will raise errors.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">img_T1</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()</span>
+    <span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">img_labels</span><span class="p">),</span>
+             <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+             <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="ne">Exception</span> <span class="n">thrown</span> <span class="ow">in</span> <span class="n">SimpleITK</span> <span class="n">LabelOverlay</span><span class="p">:</span> <span class="o">/</span><span class="n">nfs</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">blowekamp</span><span class="o">/</span><span class="n">anaconda</span><span class="o">/</span><span class="n">conda</span><span class="o">-</span><span class="n">bld</span><span class="o">/</span><span class="n">work</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">SimpleITK</span><span class="o">-</span><span class="n">build</span><span class="o">/</span><span class="n">Code</span><span class="o">/</span><span class="n">BasicFilters</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">sitkLabelOverlayImageFilter</span><span class="o">.</span><span class="n">cxx</span><span class="p">:</span><span class="mi">116</span><span class="p">:</span>
+<span class="n">sitk</span><span class="p">::</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">Both</span> <span class="n">images</span> <span class="k">for</span> <span class="n">LabelOverlayImageFilter</span> <span class="n">don</span><span class="s1">&#39;t match type or dimension!</span>
+</pre></div>
+</div>
+<p>Two ways to solve our problem:</p>
+<ol class="arabic simple">
+<li>resample the labels onto the image grid</li>
+<li>resample the image onto the label grid.</li>
+</ol>
+<p>The difference between the two from a computation standpoint depends on the
+grid sizes and on the interpolator used to estimate values at non-grid
+locations.</p>
+<p>Note interpolating a label image with an interpolator that can generate
+non-label values is problematic as you may end up with an image that has more
+classes/labels than your original. This is why we only use the nearest
+neighbor interpolator when working with label images.</p>
+<p><strong>Option 1</strong>: Resample the label image using the identity transformation</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">resampled_img_labels</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Resample</span><span class="p">(</span><span class="n">img_labels</span><span class="p">,</span> <span class="n">img_T1</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Transform</span><span class="p">(),</span>
+                                     <span class="n">sitk</span><span class="o">.</span><span class="n">sitkNearestNeighbor</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+                                     <span class="n">img_labels</span><span class="o">.</span><span class="n">GetPixelID</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Overlay onto the T1 image, requires us to rescale the intensity of the T1
+image to [0,255] and cast it so that it can be combined with the color
+overlay (we use an alpha blending of 0.5).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">rescaled_T1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">img_T1</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">rescaled_T1</span><span class="p">,</span> <span class="n">resampled_img_labels</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+         <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+         <span class="n">dpi</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_visseg_009.png" class="align-center" src="../../_images/sphx_glr_plot_visseg_009.png" />
+<p><strong>Option 2</strong>: Resample the T1 image using the identity transformation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">resampled_T1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Resample</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">img_labels</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Transform</span><span class="p">(),</span>
+                             <span class="n">sitk</span><span class="o">.</span><span class="n">sitkLinear</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">img_T1</span><span class="o">.</span><span class="n">GetPixelID</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>As above, we need to use rescale the intensity of resampled T1</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">rescaled_T1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">resampled_T1</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">rescaled_T1</span><span class="p">,</span> <span class="n">img_labels</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+         <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+         <span class="n">dpi</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_visseg_010.png" class="align-center" src="../../_images/sphx_glr_plot_visseg_010.png" />
+<p>Why are the two displays above different?
+(hint: in the calls to the &#8220;myshow3d&#8221; function the indexes of the y and z
+slices are the same).</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  9.452 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_visseg.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_visseg.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_visseg.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_visseg.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../../index.html">
+  <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../user_guide/user_guide.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/image.html">Image Basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../user_guide/visualization/visualization.html">Visualizing Images</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/gen_notebooks/visualization/plot_visseg.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../../_sources/gen_notebooks/visualization/plot_visseg.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
