@@ -107,7 +107,7 @@ rescaled_T1 = sitk.Cast(sitk.RescaleIntensity(img_T1), sitk.sitkUInt8)
 myshow3d(sitk.LabelOverlay(rescaled_T1, resampled_img_labels, 0.5),
          yslices=range(50, size[1] - 50, 20),
          zslices=range(50, size[2] - 50, 20),
-         dpi=30)
+         dpi=100)
 
 ##############################################################################
 # **Option 2**: Resample the T1 image using the identity transformation.
@@ -120,7 +120,7 @@ rescaled_T1 = sitk.Cast(sitk.RescaleIntensity(resampled_T1), sitk.sitkUInt8)
 myshow3d(sitk.LabelOverlay(rescaled_T1, img_labels, 0.5),
          yslices=range(50, size[1] - 50, 20),
          zslices=range(50, size[2] - 50, 20),
-         dpi=30)
+         dpi=100)
 
 ##############################################################################
 # Why are the two displays above different?

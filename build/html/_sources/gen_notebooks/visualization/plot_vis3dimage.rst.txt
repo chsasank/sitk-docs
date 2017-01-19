@@ -16,10 +16,6 @@ Laboratory at Brigham and Women's Hospital has a wonderful
 Please note, what is done here is for convenience and is not the common way
 images are displayed for radiological work.
 
-.. contents:: On this page
-    :local:
-    :backlinks: none
-
 Get Images
 ----------
 
@@ -184,7 +180,7 @@ slices to be displayed.
         myshow(img, title, margin, dpi)
 
     myshow3d(img_T1, yslices=range(50, size[1] - 50, 20),
-             zslices=range(50, size[2] - 50, 20), dpi=30)
+             zslices=range(50, size[2] - 50, 20), dpi=100)
 
 
 
@@ -200,7 +196,7 @@ slices to be displayed.
 
 
     myshow3d(img_T2, yslices=range(50, size[1] - 50, 30),
-             zslices=range(50, size[2] - 50, 20), dpi=30)
+             zslices=range(50, size[2] - 50, 20), dpi=100)
 
 
 
@@ -216,7 +212,7 @@ slices to be displayed.
 
 
     myshow3d(sitk.LabelToRGB(img_labels), yslices=range(50, size[1] - 50, 20),
-             zslices=range(50, size[2] - 50, 20), dpi=30)
+             zslices=range(50, size[2] - 50, 20), dpi=100)
 
 
 
@@ -226,7 +222,7 @@ slices to be displayed.
 
 
 
-**Total running time of the script:** ( 0 minutes  7.234 seconds)
+**Total running time of the script:** ( 0 minutes  7.745 seconds)
 
 
 

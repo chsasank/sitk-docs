@@ -11,11 +11,6 @@ notebooks, and work towards developing a reusable function to display 2D,3D,
 color for SimpleITK images.
 
 
-.. contents:: On this page
-    :local:
-    :backlinks: none
-
-
 
 
 .. code-block:: python
@@ -195,7 +190,7 @@ They have been copied into a "myshow.py" file so that they can be
 imported into other guides.
 
 
-**Total running time of the script:** ( 0 minutes  1.552 seconds)
+**Total running time of the script:** ( 0 minutes  2.288 seconds)
 
 
 

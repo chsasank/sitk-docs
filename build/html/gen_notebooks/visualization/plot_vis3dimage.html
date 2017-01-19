@@ -52,12 +52,6 @@ Laboratory at Brigham and Women&#8217;s Hospital has a wonderful
 <a class="reference external" href="http://www.spl.harvard.edu/publications/item/view/2037">Multi-modality MRI-based Atlas of the Brain</a> that we can use.</p>
 <p>Please note, what is done here is for convenience and is not the common way
 images are displayed for radiological work.</p>
-<div class="contents local topic" id="on-this-page">
-<p class="topic-title first">On this page</p>
-<ul class="simple">
-<li><a class="reference internal" href="#get-images" id="id1">Get Images</a></li>
-</ul>
-</div>
 <div class="section" id="get-images">
 <h2>Get Images<a class="headerlink" href="#get-images" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -155,21 +149,21 @@ slices to be displayed.</p>
     <span class="n">myshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
 
 <span class="n">myshow3d</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
-         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../../_images/sphx_glr_plot_vis3dimage_007.png" class="align-center" src="../../_images/sphx_glr_plot_vis3dimage_007.png" />
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">myshow3d</span><span class="p">(</span><span class="n">img_T2</span><span class="p">,</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
-         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../../_images/sphx_glr_plot_vis3dimage_008.png" class="align-center" src="../../_images/sphx_glr_plot_vis3dimage_008.png" />
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelToRGB</span><span class="p">(</span><span class="n">img_labels</span><span class="p">),</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
-         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../../_images/sphx_glr_plot_vis3dimage_009.png" class="align-center" src="../../_images/sphx_glr_plot_vis3dimage_009.png" />
-<p><strong>Total running time of the script:</strong> ( 0 minutes  7.234 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  7.745 seconds)</p>
 <div class="sphx-glr-footer container">
 <div class="sphx-glr-download container">
 <a class="reference download internal" href="../../_downloads/plot_vis3dimage.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_vis3dimage.py</span></code></a></div>
@@ -190,15 +184,11 @@ slices to be displayed.</p>
 </a>
 </p>
 <h3><a href="../../index.html">Table Of Contents</a></h3>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../user_guide/user_guide.html">User Guide</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/image.html">Image Basics</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../user_guide/visualization/visualization.html">Visualizing Images</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>

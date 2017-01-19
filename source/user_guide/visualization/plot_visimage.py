@@ -6,11 +6,6 @@ In this example, we will explore using matplotlib to display images in our
 notebooks, and work towards developing a reusable function to display 2D,3D,
 color for SimpleITK images.
 
-
-.. contents:: On this page
-    :local:
-    :backlinks: none
-
 """
 
 import matplotlib.pyplot as plt

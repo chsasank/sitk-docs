@@ -1,6 +1,8 @@
 Visualizing Images
 ******************
 
+Let's see how we can visualize images. Most of the code here is in python.
+
 .. toctree::
    :maxdepth: 2
 

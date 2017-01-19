@@ -12,10 +12,6 @@ Laboratory at Brigham and Women's Hospital has a wonderful
 Please note, what is done here is for convenience and is not the common way
 images are displayed for radiological work.
 
-.. contents:: On this page
-    :local:
-    :backlinks: none
-
 Get Images
 ----------
 """
@@ -102,14 +98,14 @@ def myshow3d(img, xslices=[], yslices=[], zslices=[], title=None, margin=0.05,
     myshow(img, title, margin, dpi)
 
 myshow3d(img_T1, yslices=range(50, size[1] - 50, 20),
-         zslices=range(50, size[2] - 50, 20), dpi=30)
+         zslices=range(50, size[2] - 50, 20), dpi=100)
 
 ##############################################################################
 
 myshow3d(img_T2, yslices=range(50, size[1] - 50, 30),
-         zslices=range(50, size[2] - 50, 20), dpi=30)
+         zslices=range(50, size[2] - 50, 20), dpi=100)
 
 ##############################################################################
 
 myshow3d(sitk.LabelToRGB(img_labels), yslices=range(50, size[1] - 50, 20),
-         zslices=range(50, size[2] - 50, 20), dpi=30)
+         zslices=range(50, size[2] - 50, 20), dpi=100)
