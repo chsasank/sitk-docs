@@ -71,6 +71,7 @@ to your python path.
 
         maxlen = max(len(img_xslices), len(img_yslices), len(img_zslices))
 
+
         img_null = sitk.Image([0, 0], img.GetPixelID(),
                               img.GetNumberOfComponentsPerPixel())
 

@@ -222,7 +222,7 @@ slices to be displayed.
 
 
 
-**Total running time of the script:** ( 0 minutes  5.918 seconds)
+**Total running time of the script:** ( 0 minutes  5.763 seconds)
 
 
 

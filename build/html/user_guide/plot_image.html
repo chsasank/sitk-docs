@@ -179,42 +179,42 @@ The following is a table of the enumerated list.</p>
 <p>There is also <code class="docutils literal"><span class="pre">sitkUnknown</span></code>, which is used for undefined or erroneous pixel ID&#8217;s. It has a value of <code class="docutils literal"><span class="pre">-1</span></code>.
 The 64-bit integer types are not available on all distributions. When not available the value is <code class="docutils literal"><span class="pre">sitkUnknown</span></code>.</p>
 <p>You can get the type of pixel using
-<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image10GetPixelIDEv" title="itk::simple::Image::GetPixelID"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelID()</span></code></a>
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelID()</span></code>
 and its string representation using
-<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image22GetPixelIDTypeAsStringEv" title="itk::simple::Image::GetPixelIDTypeAsString"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelIDTypeAsString()</span></code></a></p>
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelIDTypeAsString()</span></code></p>
 </div>
 <div class="section" id="images-and-physical-space">
 <h2>Images and Physical Space<a class="headerlink" href="#images-and-physical-space" title="Permalink to this headline">¶</a></h2>
 <p>The unique feature of SimpleITK (derived from ITK) as a toolkit for image manipulation and analysis is that it views <em>images as physical objects occupying a bounded region in physical space</em>.
 In addition images can have different spacing between pixels along each axis, and the axes are not necessarily orthogonal. The following figure illustrates these concepts.</p>
 <img alt="../_images/ImageOriginAndSpacing.png" src="../_images/ImageOriginAndSpacing.png" />
-<p>Each <a class="reference internal" href="../api.html#_CPPv2N3itk6simple5ImageE" title="itk::simple::Image"><code class="xref cpp cpp-class docutils literal"><span class="pre">Image</span></code></a> has following properties:</p>
+<p>Each <code class="xref cpp cpp-class docutils literal"><span class="pre">Image</span></code> has following properties:</p>
 <dl class="docutils">
 <dt><strong>Pixel type</strong></dt>
 <dd><p class="first">Type of pixel/voxel. Refer to table above. In case of a vector image, number of components per pixel can be greater than 1. This is fixed on creation.</p>
-<p class="last">Can get pixel type through <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image10GetPixelIDEv" title="itk::simple::Image::GetPixelID"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelID()</span></code></a>.
-Number of components per pixel can be found by <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image29GetNumberOfComponentsPerPixelEv" title="itk::simple::Image::GetNumberOfComponentsPerPixel"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetNumberOfComponentsPerPixel()</span></code></a></p>
+<p class="last">Can get pixel type through <code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelID()</span></code>.
+Number of components per pixel can be found by <code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetNumberOfComponentsPerPixel()</span></code></p>
 </dd>
 <dt><strong>Size</strong></dt>
 <dd><p class="first">Number of pixels/voxels in each dimension. This quantity implicitly defines the image dimension.
 This is also fixed on creation.</p>
-<p class="last">Size of the image can be found by <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image7GetSizeEv" title="itk::simple::Image::GetSize"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetSize()</span></code></a> and dimension by <a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image12GetDimensionEv" title="itk::simple::Image::GetDimension"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetDimension()</span></code></a></p>
+<p class="last">Size of the image can be found by <code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetSize()</span></code> and dimension by <code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetDimension()</span></code></p>
 </dd>
 <dt><strong>Origin</strong></dt>
 <dd><p class="first">Coordinates of the pixel/voxel with index (0,0,0) in physical units (i.e. mm). Default is zero i.e. origin of physical space.</p>
-<p class="last"><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image9GetOriginEv" title="itk::simple::Image::GetOrigin"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetOrigin()</span></code></a> and
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image9SetOriginERKNSt6vectorIdEE" title="itk::simple::Image::SetOrigin"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetOrigin()</span></code></a> can be used to get and set origin respectively.</p>
+<p class="last"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetOrigin()</span></code> and
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetOrigin()</span></code> can be used to get and set origin respectively.</p>
 </dd>
 <dt><strong>Spacing</strong></dt>
 <dd><p class="first">Distance between adjacent pixels/voxels in each dimension given in physical units.
 Default is one i.e. (1 mm, 1 mm, 1 mm).</p>
-<p class="last"><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image10GetSpacingEv" title="itk::simple::Image::GetSpacing"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetSpacing()</span></code></a> and
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image10SetSpacingERKNSt6vectorIdEE" title="itk::simple::Image::SetSpacing"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetSpacing()</span></code></a> can be used to get and set spacing respectively.</p>
+<p class="last"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetSpacing()</span></code> and
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetSpacing()</span></code> can be used to get and set spacing respectively.</p>
 </dd>
 <dt><strong>Direction Matrix</strong></dt>
 <dd><p class="first">Mapping/rotation between direction of the pixel/voxel axes and physical directions. Default is identity matrix. The matrix is passed as a 1D array in row-major form.</p>
-<p class="last"><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image12GetDirectionEv" title="itk::simple::Image::GetDirection"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetDirection()</span></code></a> and
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image12SetDirectionERKNSt6vectorIdEE" title="itk::simple::Image::SetDirection"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetDirection()</span></code></a> can be used to get and set direction matrix respectively.</p>
+<p class="last"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetDirection()</span></code> and
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetDirection()</span></code> can be used to get and set direction matrix respectively.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -250,10 +250,10 @@ Default is one i.e. (1 mm, 1 mm, 1 mm).</p>
 <p>where x is coordinate of the voxel in physical space, v is voxel index, o is origin, D is direction matrix and S is <em>diag</em> (spacing).</p>
 <p>These functions can be directly used to transform between voxel and physical space:</p>
 <ul class="simple">
-<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image39TransformContinuousIndexToPhysicalPointERKNSt6vectorIdEE" title="itk::simple::Image::TransformContinuousIndexToPhysicalPoint"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformContinuousIndexToPhysicalPoint()</span></code></a></li>
-<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image29TransformIndexToPhysicalPointERKNSt6vectorI7int64_tEE" title="itk::simple::Image::TransformIndexToPhysicalPoint"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformIndexToPhysicalPoint()</span></code></a></li>
-<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image39TransformPhysicalPointToContinuousIndexERKNSt6vectorIdEE" title="itk::simple::Image::TransformPhysicalPointToContinuousIndex"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformPhysicalPointToContinuousIndex()</span></code></a></li>
-<li><a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image29TransformPhysicalPointToIndexERKNSt6vectorIdEE" title="itk::simple::Image::TransformPhysicalPointToIndex"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformPhysicalPointToIndex()</span></code></a></li>
+<li><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformContinuousIndexToPhysicalPoint()</span></code></li>
+<li><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformIndexToPhysicalPoint()</span></code></li>
+<li><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformPhysicalPointToContinuousIndex()</span></code></li>
+<li><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::TransformPhysicalPointToIndex()</span></code></li>
 </ul>
 <p>Let&#8217;s try these out in python</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pt</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
@@ -276,15 +276,15 @@ Default is one i.e. (1 mm, 1 mm, 1 mm).</p>
 <div class="section" id="accessing-pixels">
 <h2>Accessing Pixels<a class="headerlink" href="#accessing-pixels" title="Permalink to this headline">¶</a></h2>
 <p>You can get the pixel values using one of
-<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image14GetPixelAsInt8ERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsInt8"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsInt8()</span></code></a>,
-<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image16GetPixelAsUInt32ERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsUInt32"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsUInt32()</span></code></a>,
-<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image15GetPixelAsFloatERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsFloat"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsFloat()</span></code></a>
-<a class="reference internal" href="../api.html#_CPPv2NK3itk6simple5Image16GetPixelAsDoubleERKNSt6vectorI8uint32_tEE" title="itk::simple::Image::GetPixelAsDouble"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsDouble()</span></code></a> etc.</p>
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsInt8()</span></code>,
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsUInt32()</span></code>,
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsFloat()</span></code>
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::GetPixelAsDouble()</span></code> etc.</p>
 <p>Similarly, you can set the pixel values using
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image14SetPixelAsInt8ERKNSt6vectorI8uint32_tEE6int8_t" title="itk::simple::Image::SetPixelAsInt8"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsInt8()</span></code></a>,
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image16SetPixelAsUInt32ERKNSt6vectorI8uint32_tEE8uint32_t" title="itk::simple::Image::SetPixelAsUInt32"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsUInt32()</span></code></a>,
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image15SetPixelAsFloatERKNSt6vectorI8uint32_tEEf" title="itk::simple::Image::SetPixelAsFloat"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsFloat()</span></code></a>
-<a class="reference internal" href="../api.html#_CPPv2N3itk6simple5Image16SetPixelAsDoubleERKNSt6vectorI8uint32_tEEd" title="itk::simple::Image::SetPixelAsDouble"><code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsDouble()</span></code></a> etc.</p>
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsInt8()</span></code>,
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsUInt32()</span></code>,
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsFloat()</span></code>
+<code class="xref cpp cpp-func docutils literal"><span class="pre">Image::SetPixelAsDouble()</span></code> etc.</p>
 <p>In dynamic type languages like python and lua, <code class="docutils literal"><span class="pre">GetPixel</span></code> and <code class="docutils literal"><span class="pre">SetPixel</span></code> are available.
 In python, you can also use pythonic indexing to get and set pixel values.</p>
 <p>For example</p>
@@ -414,7 +414,7 @@ account their physical space</strong></p>
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span>Test add: 40 82
 Exception thrown in SimpleITK Add: /nfs/Users/blowekamp/anaconda/conda-bld/work/build/ITK/Modules/Core/Common/include/itkImageToImageFilter.hxx:248:
-itk::ERROR: AddImageFilter(0x11793e800): Inputs do not occupy the same physical space!
+itk::ERROR: AddImageFilter(0x11630e110): Inputs do not occupy the same physical space!
 InputImage Origin: [0.0000000e+00, 0.0000000e+00], InputImage_1 Origin: [3.0000000e+00, 5.0000000e+00]
         Tolerance: 1.0000000e-06
 </pre></div>
@@ -430,7 +430,7 @@ image pairs or image, scalar pairs:</p>
 <li>Power <code class="docutils literal"><span class="pre">**</span></code></li>
 </ul>
 <p>Lot more operations like sine, cosine, exponentation etc. are also available.</p>
-<p><strong>Total running time of the script:</strong> ( 0 minutes  2.486 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  2.042 seconds)</p>
 <div class="sphx-glr-footer container">
 <div class="sphx-glr-download container">
 <a class="reference download internal" href="../_downloads/plot_image.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_image.py</span></code></a></div>

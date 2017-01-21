@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Transforms and Resampling &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Visualizing 2D images" href="../visualization/plot_visimage.html" />
+    <link rel="prev" title="More details about Transforms" href="plot_moretransforms.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="transforms-and-resampling">
+<span id="sphx-glr-user-guide-transforms-plot-transforms-py"></span><h1>Transforms and Resampling<a class="headerlink" href="#transforms-and-resampling" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial explains how to apply transforms to images.</p>
+<p>SimpleITK provides you with variety of transforms like Translation,
+Affine (which includes rotations, shear, scaling)</p>
+<p>It is important to keep in mind that these transforms are applied on the
+points in the physical space, not the image cordinates itself.</p>
+<p>A few conventions:</p>
+<ul class="simple">
+<li>Points are represented by vector-like data types: Tuple, Numpy array, List.</li>
+<li>Matrices are represented by vector-like data types in row major order.</li>
+</ul>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this Page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#creating-and-manipulating-transforms" id="id1">Creating and Manipulating Transforms</a><ul>
+<li><a class="reference internal" href="#identity-transform" id="id2">Identity Transform</a></li>
+<li><a class="reference internal" href="#translation-transform" id="id3">Translation Transform</a></li>
+<li><a class="reference internal" href="#affine-transform" id="id4">Affine Transform</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#applying-transforms-to-images" id="id5">Applying Transforms to Images</a><ul>
+<li><a class="reference internal" href="#scaling" id="id6">Scaling</a></li>
+<li><a class="reference internal" href="#rotation" id="id7">Rotation</a></li>
+<li><a class="reference internal" href="#shearing" id="id8">Shearing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#composite-transform" id="id9">Composite Transform</a></li>
+</ul>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Author: Sasank Chilamkurthy</span>
+<span class="c1"># sphinx_gallery_thumbnail_number = 7</span>
+
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">myshow</span> <span class="kn">import</span> <span class="n">myshow</span>
+</pre></div>
+</div>
+<div class="section" id="creating-and-manipulating-transforms">
+<h2>Creating and Manipulating Transforms<a class="headerlink" href="#creating-and-manipulating-transforms" title="Permalink to this headline">¶</a></h2>
+<p>A number of different spatial transforms are available in SimpleITK.</p>
+<div class="section" id="identity-transform">
+<h3>Identity Transform<a class="headerlink" href="#identity-transform" title="Permalink to this headline">¶</a></h3>
+<p>The simplest is the Identity Transform.
+This transform simply returns input points unaltered.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">dimension</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;*Identity Transform*&#39;</span><span class="p">)</span>
+<span class="n">identity</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkIdentity</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Dimension: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">GetDimension</span><span class="p">()))</span>
+
+<span class="c1"># Points are always defined in physical space</span>
+<span class="n">point</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">transform_point</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+    <span class="n">transformed_point</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Point {} is transformed to {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">transformed_point</span><span class="p">))</span>
+
+<span class="n">transform_point</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">Identity</span> <span class="n">Transform</span><span class="o">*</span>
+<span class="n">Dimension</span><span class="p">:</span> <span class="mi">2</span>
+<span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Transform are defined by two sets of parameters, the <code class="docutils literal"><span class="pre">Parameters</span></code> and
+<code class="docutils literal"><span class="pre">FixedParameters</span></code>.  <code class="docutils literal"><span class="pre">FixedParameters</span></code> are not changed during the
+optimization process when performing registration.</p>
+</div>
+<div class="section" id="translation-transform">
+<h3>Translation Transform<a class="headerlink" href="#translation-transform" title="Permalink to this headline">¶</a></h3>
+<p>This transform simply translates input points by a offest.
+For the TranslationTransform, the Parameters are the values of this translation
+Offset.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;*Translation Transform*&#39;</span><span class="p">)</span>
+<span class="n">translation</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">TranslationTransform</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Parameters: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">translation</span><span class="o">.</span><span class="n">GetParameters</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Offset:     {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">translation</span><span class="o">.</span><span class="n">GetOffset</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;FixedParameters: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">translation</span><span class="o">.</span><span class="n">GetFixedParameters</span><span class="p">()))</span>
+<span class="n">transform_point</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">translation</span><span class="o">.</span><span class="n">SetParameters</span><span class="p">((</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Parameters: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">translation</span><span class="o">.</span><span class="n">GetParameters</span><span class="p">()))</span>
+<span class="n">transform_point</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">Translation</span> <span class="n">Transform</span><span class="o">*</span>
+<span class="n">Parameters</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Offset</span><span class="p">:</span>     <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">FixedParameters</span><span class="p">:</span> <span class="p">()</span>
+<span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">Parameters</span><span class="p">:</span> <span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">)</span>
+<span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="mf">4.1</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="affine-transform">
+<h3>Affine Transform<a class="headerlink" href="#affine-transform" title="Permalink to this headline">¶</a></h3>
+<p>The affine transform is capable of representing translations, rotations,
+shearing, and scaling.</p>
+<p>Affine transformation can be described with the following equation:</p>
+<div class="math">
+\[x' = A.(x-c) + t\]</div>
+<p>where x is the input cordinate vector and x&#8217; is the output cordinate vector,
+A is the affine matrix, t is the translation and c is the centre of
+the affine transform.
+By default, A = I and C = 0</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;*Affine Transform*&#39;</span><span class="p">)</span>
+<span class="n">affine</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Parameters: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">affine</span><span class="o">.</span><span class="n">GetParameters</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;FixedParameters: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">affine</span><span class="o">.</span><span class="n">GetFixedParameters</span><span class="p">()))</span>
+<span class="n">transform_point</span><span class="p">(</span><span class="n">affine</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">SetTranslation</span><span class="p">((</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Parameters: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">affine</span><span class="o">.</span><span class="n">GetParameters</span><span class="p">()))</span>
+<span class="n">transform_point</span><span class="p">(</span><span class="n">affine</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">Affine</span> <span class="n">Transform</span><span class="o">*</span>
+<span class="n">Parameters</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">FixedParameters</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">Parameters</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">)</span>
+<span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="mf">4.1</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A number of other transforms exist to represent non-affine deformations,
+well-behaved rotation in 3D, etc. See the <span class="xref doc">Next guide</span> for more
+information.</p>
+</div>
+</div>
+<div class="section" id="applying-transforms-to-images">
+<h2>Applying Transforms to Images<a class="headerlink" href="#applying-transforms-to-images" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s create a grid image to illustrate our transforms.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">GridSource</span><span class="p">(</span><span class="n">outputPixelType</span><span class="o">=</span><span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt16</span><span class="p">,</span>
+                       <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+                       <span class="n">sigma</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+                       <span class="n">gridSpacing</span><span class="o">=</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span>
+                       <span class="n">gridOffset</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                       <span class="n">spacing</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+
+<span class="n">myshow</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="s1">&#39;Grid Input&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_001.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_001.png" />
+<p>To apply the transform, a resampling operation is required.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Resample applies transform to phyiscal space, not voxel cordinates directly.
+Once phyiscal space is transformed, you will need to specify how you view
+this space by setting output origin, spacing and direction. Alternatively,
+you can specify a reference image so that output origin, spacing and
+direction are set to that of the reference image.</p>
+</div>
+<p>In the following <code class="docutils literal"><span class="pre">resample</span></code> function, output image Origin, Spacing, Size,
+Direction are taken from the reference</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">resample</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+    <span class="n">reference_image</span> <span class="o">=</span> <span class="n">image</span>
+    <span class="n">interpolator</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkCosineWindowedSinc</span>
+    <span class="n">default_value</span> <span class="o">=</span> <span class="mf">100.0</span>
+    <span class="k">return</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Resample</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">reference_image</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span>
+                         <span class="n">interpolator</span><span class="p">,</span> <span class="n">default_value</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let&#8217;s apply translation to image</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">translation</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">TranslationTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">translation</span><span class="o">.</span><span class="n">SetOffset</span><span class="p">((</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">))</span>
+<span class="n">transform_point</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">translation</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Resampled Translation&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_002.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_002.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="mf">4.1</span><span class="p">,</span> <span class="mf">5.6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>What happened?  The translation is positive in both directions.  Why does the
+output image move down and to the left?</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It important to keep in mind that a transform in a resampling operation
+defines <em>the transform from the output space to the input space</em>.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">inv_translation</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">GetInverse</span><span class="p">()</span>
+<span class="n">transform_point</span><span class="p">(</span><span class="n">inv_translation</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">inv_translation</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Inverse Resampled&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_003.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_003.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Point</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="ow">is</span> <span class="n">transformed</span> <span class="n">to</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5999999999999996</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An affine (line preserving) transformation, can perform translation, scaling,
+rotation and shearing:
+Translation
+&#8212;&#8212;&#8212;&#8211;</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x_translation</span><span class="p">,</span> <span class="n">y_translation</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">)</span>
+
+<span class="n">affine</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">SetTranslation</span><span class="p">((</span><span class="n">x_translation</span><span class="p">,</span> <span class="n">y_translation</span><span class="p">))</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">affine</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Translated&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_004.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_004.png" />
+<div class="section" id="scaling">
+<h3>Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x_scale</span><span class="p">,</span> <span class="n">y_scale</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.7</span>
+
+<span class="n">affine</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">Scale</span><span class="p">((</span><span class="n">x_scale</span><span class="p">,</span> <span class="n">y_scale</span><span class="p">))</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">affine</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Scaled&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_005.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_005.png" />
+</div>
+<div class="section" id="rotation">
+<h3>Rotation<a class="headerlink" href="#rotation" title="Permalink to this headline">¶</a></h3>
+<p>We can either use <code class="docutils literal"><span class="pre">AffineTransform::Rotate</span></code> or directly set rotation matrix.
+Let&#8217;s take the first route.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">degrees</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">affine</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">radians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">degrees</span> <span class="o">/</span> <span class="mf">180.</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">Rotate</span><span class="p">(</span><span class="n">axis1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">radians</span><span class="p">)</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">affine</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Rotated&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_006.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_006.png" />
+</div>
+<div class="section" id="shearing">
+<h3>Shearing<a class="headerlink" href="#shearing" title="Permalink to this headline">¶</a></h3>
+<p>This time, let&#8217;s directly set the matrix.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x_shear</span><span class="p">,</span> <span class="n">y_shear</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span>
+
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">x_shear</span>
+<span class="n">matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">y_shear</span>
+<span class="k">print</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+
+<span class="n">affine</span><span class="o">.</span><span class="n">SetMatrix</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">affine</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Sheared&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_007.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_007.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="mf">1.</span>  <span class="o">-</span><span class="mf">0.3</span><span class="p">]</span>
+ <span class="p">[</span><span class="o">-</span><span class="mf">0.1</span>  <span class="mf">1.</span> <span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="composite-transform">
+<h2>Composite Transform<a class="headerlink" href="#composite-transform" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to compose multiple transform together into a single transform
+object. With a composite transform, multiple resampling operations are
+prevented, so interpolation errors are not accumulated. For example, an
+affine transformation that consists of a translation and rotation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">translate</span> <span class="o">=</span> <span class="p">(</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">)</span>
+<span class="n">rotate</span> <span class="o">=</span> <span class="mf">20.0</span>
+
+<span class="n">affine</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">SetTranslation</span><span class="p">(</span><span class="n">translate</span><span class="p">)</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">Rotate</span><span class="p">(</span><span class="n">axis1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">rotate</span><span class="p">)</span>
+
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">affine</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Single Transform&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_008.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_008.png" />
+<p>This can also be represented with two Transform objects applied in sequence
+with a Composite Transform:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">translation</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">TranslationTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">translation</span><span class="o">.</span><span class="n">SetOffset</span><span class="p">(</span><span class="n">translate</span><span class="p">)</span>
+
+<span class="n">affine</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">Rotate</span><span class="p">(</span><span class="n">axis1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">rotate</span><span class="p">)</span>
+
+<span class="n">composite</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkComposite</span><span class="p">)</span>
+<span class="n">composite</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">translation</span><span class="p">)</span>
+<span class="n">composite</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">affine</span><span class="p">)</span>
+
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">composite</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Composite of Two Transforms&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_009.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_009.png" />
+<p>Beware, tranforms are non-commutative &#8211; order matters!</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">composite</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkComposite</span><span class="p">)</span>
+<span class="n">composite</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">affine</span><span class="p">)</span>
+<span class="n">composite</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">translation</span><span class="p">)</span>
+
+<span class="n">resampled</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">composite</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">resampled</span><span class="p">,</span> <span class="s1">&#39;Composite in reverse&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_transforms_010.png" class="align-center" src="../../_images/sphx_glr_plot_transforms_010.png" />
+<p><strong>Total running time of the script:</strong> ( 0 minutes  1.072 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_transforms.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_transforms.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_transforms.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_transforms.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../../index.html">
+  <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/user_guide/transforms/plot_transforms.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../../_sources/user_guide/transforms/plot_transforms.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

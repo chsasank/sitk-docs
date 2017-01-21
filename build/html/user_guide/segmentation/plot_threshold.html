@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Thresholding &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Region Growing Segmentation" href="plot_region_growing.html" />
+    <link rel="prev" title="Function to show images" href="../myshow.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="thresholding">
+<span id="sphx-glr-user-guide-segmentation-plot-threshold-py"></span><h1>Thresholding<a class="headerlink" href="#thresholding" title="Permalink to this headline">¶</a></h1>
+<p>Thresholding is the most basic form of segmentation. It simply labels the
+pixels of an image based on the intensity range without respect to geometry
+or connectivity.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Author: Sasank Chilamkurthy</span>
+<span class="c1"># License: Apache</span>
+<span class="c1"># sphinx_gallery_thumbnail_number = 4</span>
+
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="kn">from</span> <span class="nn">myshow</span> <span class="kn">import</span> <span class="n">myshow</span><span class="p">,</span> <span class="n">myshow3d</span>
+<span class="kn">from</span> <span class="nn">downloaddata</span> <span class="kn">import</span> <span class="n">fetch_data</span> <span class="k">as</span> <span class="n">fdata</span>
+</pre></div>
+</div>
+<div class="section" id="load-image">
+<h2>Load Image<a class="headerlink" href="#load-image" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img_T1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/A1_grayT1.nrrd&quot;</span><span class="p">))</span>
+
+<span class="c1"># To visualize the labels image in RGB needs a image with 0-255 range</span>
+<span class="n">img_T1_255</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">img_T1</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="n">img_T1</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()</span>
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_threshold_001.png" class="align-center" src="../../_images/sphx_glr_plot_threshold_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">A1_grayT1</span><span class="o">.</span><span class="n">nrrd</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="threshold">
+<h2>Threshold<a class="headerlink" href="#threshold" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s pick a threshold 200 for thresholding.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">seg</span> <span class="o">=</span> <span class="n">img_T1</span> <span class="o">&gt;</span> <span class="mi">200</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg</span><span class="p">),</span> <span class="s2">&quot;Basic Thresholding&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_threshold_002.png" class="align-center" src="../../_images/sphx_glr_plot_threshold_002.png" />
+<p>You can also use a upper and lower threshold.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">seg</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">BinaryThreshold</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span>
+                           <span class="n">lowerThreshold</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">upperThreshold</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+                           <span class="n">insideValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">outsideValue</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg</span><span class="p">),</span> <span class="s2">&quot;Binary Thresholding&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_threshold_003.png" class="align-center" src="../../_images/sphx_glr_plot_threshold_003.png" />
+</div>
+<div class="section" id="otsu-thresholding">
+<h2>Otsu Thresholding<a class="headerlink" href="#otsu-thresholding" title="Permalink to this headline">¶</a></h2>
+<p>ITK has a number of histogram based automatic thresholding filters including
+Huang, MaximumEntropy, Triangle, and the popular Otsu&#8217;s method. These methods
+create a histogram then use a heuristic to determine a threshold value.</p>
+<p>Otsu Thresholding for example, assumes that the image contains two classes
+of pixels following bi-modal histogram and calculates the optimum threshold
+separating these two classes.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">otsu_filter</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">OtsuThresholdImageFilter</span><span class="p">()</span>
+<span class="n">otsu_filter</span><span class="o">.</span><span class="n">SetInsideValue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">otsu_filter</span><span class="o">.</span><span class="n">SetOutsideValue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">seg</span> <span class="o">=</span> <span class="n">otsu_filter</span><span class="o">.</span><span class="n">Execute</span><span class="p">(</span><span class="n">img_T1</span><span class="p">)</span>
+<span class="n">myshow</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg</span><span class="p">),</span> <span class="s2">&quot;Otsu Thresholding&quot;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Computed Threshold: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">otsu_filter</span><span class="o">.</span><span class="n">GetThreshold</span><span class="p">()))</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_threshold_004.png" class="align-center" src="../../_images/sphx_glr_plot_threshold_004.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Computed</span> <span class="n">Threshold</span><span class="p">:</span> <span class="mf">227.5505828857422</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  6.905 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_threshold.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_threshold.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_threshold.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_threshold.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../../index.html">
+  <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/user_guide/segmentation/plot_threshold.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../../_sources/user_guide/segmentation/plot_threshold.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

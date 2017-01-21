@@ -3,7 +3,7 @@ __pycache__
 .DS_Store
 # generated documentation
 source/doxyxml
-source/gen_notebooks
+source/user_guide
 source/auto_examples
 # Data
 Data

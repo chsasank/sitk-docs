@@ -408,7 +408,7 @@ account their physical space**
 
     Test add: 40 82
     Exception thrown in SimpleITK Add: /nfs/Users/blowekamp/anaconda/conda-bld/work/build/ITK/Modules/Core/Common/include/itkImageToImageFilter.hxx:248:
-    itk::ERROR: AddImageFilter(0x11793e800): Inputs do not occupy the same physical space! 
+    itk::ERROR: AddImageFilter(0x11630e110): Inputs do not occupy the same physical space! 
     InputImage Origin: [0.0000000e+00, 0.0000000e+00], InputImage_1 Origin: [3.0000000e+00, 5.0000000e+00]
             Tolerance: 1.0000000e-06
 
@@ -426,7 +426,7 @@ image pairs or image, scalar pairs:
 Lot more operations like sine, cosine, exponentation etc. are also available.
 
 
-**Total running time of the script:** ( 0 minutes  2.486 seconds)
+**Total running time of the script:** ( 0 minutes  2.042 seconds)
 
 
 

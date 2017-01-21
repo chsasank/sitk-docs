@@ -51,6 +51,55 @@ Basics of Image
 
     <div style='clear:both'></div>
 
+Segmentation
+============
+
+Image segmentation filters process an image to partition it into (hopefully) meaningful regions. The output is commonly an image of integers where each integer can represent an object. The value 0 is commonly used for the background, and 1 ( sometimes 255) for a foreground object.
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Thresholding is the most basic form of segmentation. It simply labels the pixels of an image ba...">
+
+.. only:: html
+
+    .. figure:: /user_guide/segmentation/images/thumb/sphx_glr_plot_threshold_thumb.png
+
+        :ref:`sphx_glr_user_guide_segmentation_plot_threshold.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /user_guide/segmentation/plot_threshold
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Thresholding is the most basic form of segmentation. The first step of  improvement upon the na...">
+
+.. only:: html
+
+    .. figure:: /user_guide/segmentation/images/thumb/sphx_glr_plot_region_growing_thumb.png
+
+        :ref:`sphx_glr_user_guide_segmentation_plot_region_growing.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /user_guide/segmentation/plot_region_growing
+.. raw:: html
+
+    <div style='clear:both'></div>
+
 Transforms
 ==========
 
@@ -77,13 +126,13 @@ Transforms
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This tutorial explains how to apply transforms to images.">
+    <div class="sphx-glr-thumbcontainer" tooltip=" This guide introduces the transformation types supported by SimpleITK and  illustrates how to ...">
 
 .. only:: html
 
-    .. figure:: /user_guide/transforms/images/thumb/sphx_glr_plot_resample_thumb.png
+    .. figure:: /user_guide/transforms/images/thumb/sphx_glr_plot_moretransforms_thumb.png
 
-        :ref:`sphx_glr_user_guide_transforms_plot_resample.py`
+        :ref:`sphx_glr_user_guide_transforms_plot_moretransforms.py`
 
 .. raw:: html
 
@@ -93,7 +142,27 @@ Transforms
 .. toctree::
    :hidden:
 
-   /user_guide/transforms/plot_resample
+   /user_guide/transforms/plot_moretransforms
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This tutorial explains how to apply transforms to images.">
+
+.. only:: html
+
+    .. figure:: /user_guide/transforms/images/thumb/sphx_glr_plot_transforms_thumb.png
+
+        :ref:`sphx_glr_user_guide_transforms_plot_transforms.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /user_guide/transforms/plot_transforms
 .. raw:: html
 
     <div style='clear:both'></div>

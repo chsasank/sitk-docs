@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>More details about Transforms &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Transforms and Resampling" href="plot_transforms.html" />
+    <link rel="prev" title="Image Interpolation" href="plot_interpolation.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="more-details-about-transforms">
+<span id="sphx-glr-user-guide-transforms-plot-moretransforms-py"></span><h1>More details about Transforms<a class="headerlink" href="#more-details-about-transforms" title="Permalink to this headline">¶</a></h1>
+<p>This guide introduces the transformation types supported by SimpleITK and
+illustrates how to &#8220;promote&#8221; transformations from a lower to higher parameter
+space (e.g. 3D translation to 3D rigid).</p>
+<div class="contents local topic" id="on-this-page">
+<p class="topic-title first">On this Page</p>
+<ul class="simple">
+<li><a class="reference internal" href="#points-in-simpleitk" id="id1">Points in SimpleITK</a><ul>
+<li><a class="reference internal" href="#utility-functions" id="id2">Utility functions</a><ul>
+<li><a class="reference internal" href="#print-point" id="id3">Print Point</a></li>
+<li><a class="reference internal" href="#generate-random-cloud-of-points" id="id4">Generate Random Cloud of points</a></li>
+<li><a class="reference internal" href="#compute-registration-error" id="id5">Compute Registration Error</a></li>
+<li><a class="reference internal" href="#check-difference-between-two-transformations" id="id6">Check difference between two transformations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#global-transformations" id="id7">Global Transformations</a><ul>
+<li><a class="reference internal" href="#translationtransform" id="id8">TranslationTransform</a></li>
+<li><a class="reference internal" href="#euler2dtransform" id="id9">Euler2DTransform</a></li>
+<li><a class="reference internal" href="#versortransform" id="id10">VersorTransform</a></li>
+<li><a class="reference internal" href="#translation-to-rigid-3d" id="id11">Translation to Rigid [3D]</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><strong>SimpleITK Transformation Types</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1TranslationTransform.html">TranslationTransform</a></td>
+<td>2D or 3D, translation</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1VersorTransform.html">VersorTransform</a></td>
+<td>3D, rotation represented by a versor</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1VersorRigid3DTransform.html">VersorRigid3DTransform</a></td>
+<td>3D, rigid transformation with rotation represented by a versor</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1Euler2DTransform.html">Euler2DTransform</a></td>
+<td>2D, rigid transformation with rotation represented by a Euler angle</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1Euler3DTransform.html">Euler3DTransform</a></td>
+<td>3D, rigid transformation with rotation represented by Euler angles</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1Similarity2DTransform.html">Similarity2DTransform</a></td>
+<td>2D, composition of isotropic scaling and rigid transformation with rotation represented by a Euler angle</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1Similarity3DTransform.html">Similarity3DTransform</a></td>
+<td>3D, composition of isotropic scaling and rigid transformation with rotation represented by a versor</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1ScaleTransform.html">ScaleTransform</a></td>
+<td>2D or 3D, anisotropic scaling</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1ScaleVersor3DTransform.html">ScaleVersor3DTransform</a></td>
+<td>3D, rigid transformation and anisotropic scale is added to the rotation matrix part (not composed as one would expect)</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1ScaleSkewVersor3DTransform.html">ScaleSkewVersor3DTransform</a></td>
+<td>3D, rigid transformation with anisotropic scale and skew matrices added to the rotation matrix part (not composed as one would expect)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1AffineTransform.html">AffineTransform</a></td>
+<td>2D or 3D, affine transformation.</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1BSplineTransform.html">BSplineTransform</a></td>
+<td>2D or 3D, deformable transformation represented by a sparse regular grid of control points.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1DisplacementFieldTransform.html">DisplacementFieldTransform</a></td>
+<td>2D or 3D, deformable transformation represented as a dense regular grid of vectors.</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.itk.org/SimpleITKDoxygen/html/classitk_1_1simple_1_1Transform.html">Transform</a></td>
+<td>A generic transformation. Can represent any of the SimpleITK transformations, and a <strong>composite transformation</strong> (stack of transformations concatenated via composition, last added, first applied).</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<div class="section" id="points-in-simpleitk">
+<h2>Points in SimpleITK<a class="headerlink" href="#points-in-simpleitk" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="utility-functions">
+<h3>Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s write some functions that deal with point data in a uniform manner.</p>
+<div class="section" id="print-point">
+<h4>Print Point<a class="headerlink" href="#print-point" title="Permalink to this headline">¶</a></h4>
+<p>Format a point for printing, based on specified precision with trailing
+zeros.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">point2str</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">format_str</span> <span class="o">=</span> <span class="s1">&#39;.{0}f&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">format_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">point</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-random-cloud-of-points">
+<h4>Generate Random Cloud of points<a class="headerlink" href="#generate-random-cloud-of-points" title="Permalink to this headline">¶</a></h4>
+<p>Generate random (uniform withing bounds) nD point cloud.
+Dimension is based on the number of pairs in the bounds input.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">uniform_random_points</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+    <span class="n">internal_bounds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sorted</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">]</span>
+    <span class="c1"># Generate rows for each of the coordinates according to</span>
+    <span class="c1"># the given bounds, stack into an array, and split into</span>
+    <span class="c1"># a list of points.</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">num_points</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">internal_bounds</span><span class="p">])</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">mat</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compute-registration-error">
+<h4>Compute Registration Error<a class="headerlink" href="#compute-registration-error" title="Permalink to this headline">¶</a></h4>
+<p>Distances between points transformed by the given transformation and their
+location in another coordinate system. When the points are only used to
+evaluate registration accuracy (not used in the registration) this is the
+target registration error (TRE).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">target_registration_errors</span><span class="p">(</span><span class="n">tx</span><span class="p">,</span> <span class="n">point_list</span><span class="p">,</span> <span class="n">reference_point_list</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tx</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p_ref</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">p_ref</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">point_list</span><span class="p">,</span> <span class="n">reference_point_list</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="check-difference-between-two-transformations">
+<h4>Check difference between two transformations<a class="headerlink" href="#check-difference-between-two-transformations" title="Permalink to this headline">¶</a></h4>
+<p>Check whether two transformations are &#8220;equivalent&#8221; in an arbitrary spatial
+region either 3D or 2D, [x=(-10,10), y=(-100,100), z=(-1000,1000)]. This is
+just a sanity check, as we are just looking at the effect of the
+transformations on a random set of points in the region.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_transformation_differences</span><span class="p">(</span><span class="n">tx1</span><span class="p">,</span> <span class="n">tx2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">tx1</span><span class="o">.</span><span class="n">GetDimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">tx2</span><span class="o">.</span><span class="n">GetDimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">tx1</span><span class="o">.</span><span class="n">GetDimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">tx2</span><span class="o">.</span><span class="n">GetDimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Transformation dimensions mismatch, &#39;</span>
+                         <span class="s1">&#39;or unsupported transformation dimensionality&#39;</span><span class="p">)</span>
+    <span class="n">num_points</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">point_list</span> <span class="o">=</span> <span class="n">uniform_random_points</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
+    <span class="n">tx1_point_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">tx1</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">point_list</span><span class="p">]</span>
+    <span class="n">differences</span> <span class="o">=</span> <span class="n">target_registration_errors</span><span class="p">(</span><span class="n">tx2</span><span class="p">,</span> <span class="n">point_list</span><span class="p">,</span> <span class="n">tx1_point_list</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;{} - {} :</span><span class="se">\t</span><span class="s1">minDifference: {:.2f} maxDifference: {:.2f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">tx1</span><span class="o">.</span><span class="n">GetName</span><span class="p">(),</span> <span class="n">tx2</span><span class="o">.</span><span class="n">GetName</span><span class="p">(),</span> <span class="nb">min</span><span class="p">(</span><span class="n">differences</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">differences</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>In SimpleITK points can be represented by any vector-like data type.
+In Python these include Tuple, Numpy array, and List. In general Python will
+treat these data types differently, as illustrated by the print function
+below.</p>
+<p>SimpleITK points represented by vector-like data structures.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">point_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">10.531</span><span class="p">,</span> <span class="mf">11.8341</span><span class="p">)</span>
+<span class="n">point_np_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">10.531</span><span class="p">,</span> <span class="mf">11.8341</span><span class="p">])</span>
+<span class="n">point_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">10.531</span><span class="p">,</span> <span class="mf">11.8341</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;tuple : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point_tuple</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;numpy array : {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point_np_array</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;list: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point_list</span><span class="p">))</span>
+
+<span class="c1"># Uniform printing with specified precision.</span>
+<span class="n">precision</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">point2str</span><span class="p">(</span><span class="n">point_tuple</span><span class="p">,</span> <span class="n">precision</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">point2str</span><span class="p">(</span><span class="n">point_np_array</span><span class="p">,</span> <span class="n">precision</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">point2str</span><span class="p">(</span><span class="n">point_list</span><span class="p">,</span> <span class="n">precision</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="nb">tuple</span> <span class="p">:</span> <span class="p">(</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">10.531</span><span class="p">,</span> <span class="mf">11.8341</span><span class="p">)</span>
+<span class="n">numpy</span> <span class="n">array</span> <span class="p">:</span> <span class="p">[</span>  <span class="mf">9.</span>      <span class="mf">10.531</span>   <span class="mf">11.8341</span><span class="p">]</span>
+<span class="nb">list</span><span class="p">:</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">10.531</span><span class="p">,</span> <span class="mf">11.8341</span><span class="p">]</span>
+<span class="mf">9.00</span> <span class="mf">10.53</span> <span class="mf">11.83</span>
+<span class="mf">9.00</span> <span class="mf">10.53</span> <span class="mf">11.83</span>
+<span class="mf">9.00</span> <span class="mf">10.53</span> <span class="mf">11.83</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="global-transformations">
+<h2>Global Transformations<a class="headerlink" href="#global-transformations" title="Permalink to this headline">¶</a></h2>
+<p>All global transformations <em>except</em> translation are of the form:</p>
+<div class="math">
+\[T(\mathbf{x}) = A(\mathbf{x}-\mathbf{c}) + \mathbf{t} + \mathbf{c}\]</div>
+<p>In ITK speak (when printing your transformation):</p>
+<ul class="simple">
+<li>Matrix: the matrix  <span class="math">\(A\)</span></li>
+<li>Center: the point  <span class="math">\(c\)</span></li>
+<li>Translation: the vector  <span class="math">\(t\)</span></li>
+<li>Offset:  <span class="math">\(t+c−Ac\)</span></li>
+</ul>
+<div class="section" id="translationtransform">
+<h3>TranslationTransform<a class="headerlink" href="#translationtransform" title="Permalink to this headline">¶</a></h3>
+<p>A 3D translation. Note that you need to specify the dimensionality,
+as the sitk TranslationTransform represents both 2D and 3D translations.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">dimension</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># offset can be any vector-like data</span>
+<span class="n">translation</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">TranslationTransform</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">translation</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">itk</span><span class="p">::</span><span class="n">simple</span><span class="p">::</span><span class="n">Transform</span>
+ <span class="n">TranslationTransform</span> <span class="p">(</span><span class="mh">0x11632bf10</span><span class="p">)</span>
+   <span class="n">RTTI</span> <span class="n">typeinfo</span><span class="p">:</span>   <span class="n">itk</span><span class="p">::</span><span class="n">TranslationTransform</span><span class="o">&lt;</span><span class="n">double</span><span class="p">,</span> <span class="mi">3</span><span class="n">u</span><span class="o">&gt;</span>
+   <span class="n">Reference</span> <span class="n">Count</span><span class="p">:</span> <span class="mi">1</span>
+   <span class="n">Modified</span> <span class="n">Time</span><span class="p">:</span> <span class="mi">12343</span>
+   <span class="n">Debug</span><span class="p">:</span> <span class="n">Off</span>
+   <span class="n">Object</span> <span class="n">Name</span><span class="p">:</span>
+   <span class="n">Observers</span><span class="p">:</span>
+     <span class="n">none</span>
+   <span class="n">Offset</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Transform a point and use the inverse transformation to get the original
+back.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">point</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+<span class="n">transformed_point</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+<span class="n">translation_inverse</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">GetInverse</span><span class="p">()</span>
+<span class="k">print</span><span class="p">((</span><span class="s1">&#39;original point:    {} </span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;transformed point: {} </span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;back to original:  {} </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">point</span><span class="p">),</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">transformed_point</span><span class="p">),</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">translation_inverse</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">transformed_point</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">original</span> <span class="n">point</span><span class="p">:</span>    <span class="mf">10.0</span> <span class="mf">11.0</span> <span class="mf">12.0</span>
+<span class="n">transformed</span> <span class="n">point</span><span class="p">:</span> <span class="mf">11.0</span> <span class="mf">13.0</span> <span class="mf">15.0</span>
+<span class="n">back</span> <span class="n">to</span> <span class="n">original</span><span class="p">:</span>  <span class="mf">10.0</span> <span class="mf">11.0</span> <span class="mf">12.0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="euler2dtransform">
+<h3>Euler2DTransform<a class="headerlink" href="#euler2dtransform" title="Permalink to this headline">¶</a></h3>
+<p>This transform applies a rigid transformation is 2D space. The transform
+is specified as a rotation around arbitrary center and is followed by a
+translation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">rotation2D</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Euler2DTransform</span><span class="p">()</span>
+<span class="n">rotation2D</span><span class="o">.</span><span class="n">SetTranslation</span><span class="p">((</span><span class="mf">7.2</span><span class="p">,</span> <span class="mf">8.4</span><span class="p">))</span>
+<span class="n">rotation2D</span><span class="o">.</span><span class="n">SetAngle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">point</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+<span class="k">print</span><span class="p">((</span><span class="s1">&#39;original point:    {}</span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;transformed point:  {}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">point</span><span class="p">),</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">rotation2D</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">original</span> <span class="n">point</span><span class="p">:</span>    <span class="mf">10.0</span> <span class="mf">11.0</span>
+<span class="n">transformed</span> <span class="n">point</span><span class="p">:</span>  <span class="o">-</span><span class="mf">3.8</span> <span class="mf">18.4</span>
+</pre></div>
+</div>
+<p>Change the center of rotation so that it coincides with the point we want to
+transform, why is this a unique configuration?</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">rotation2D</span><span class="o">.</span><span class="n">SetCenter</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+<span class="k">print</span><span class="p">((</span><span class="s1">&#39;original point:    {}</span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;transformed point:  {}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">point</span><span class="p">),</span>
+    <span class="n">point2str</span><span class="p">(</span><span class="n">rotation2D</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">original</span> <span class="n">point</span><span class="p">:</span>    <span class="mf">10.0</span> <span class="mf">11.0</span>
+<span class="n">transformed</span> <span class="n">point</span><span class="p">:</span>  <span class="mf">17.2</span> <span class="mf">19.4</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="versortransform">
+<h3>VersorTransform<a class="headerlink" href="#versortransform" title="Permalink to this headline">¶</a></h3>
+<p>Rotation only, parametrized by Versor (vector part of unit quaternion),
+quaternion defined by rotation of theta around axis n:</p>
+<div class="math">
+\[q = [n\sin(\theta/2), \cos(\theta/2)]\]</div>
+<p>180 degree rotation around z axis</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Using a versor</span>
+<span class="n">rotation1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VersorTransform</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># Using axis-angle:</span>
+<span class="n">rotation2</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VersorTransform</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="c1"># Using a matrix:</span>
+<span class="n">rotation3</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VersorTransform</span><span class="p">()</span>
+<span class="n">rotation3</span><span class="o">.</span><span class="n">SetMatrix</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">rotation1</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">rotation2</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">rotation3</span><span class="o">.</span><span class="n">TransformPoint</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">((</span><span class="s1">&#39;Points after transformation:</span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;p1 = {} </span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;p2 = {} </span><span class="se">\n</span><span class="s1">&#39;</span>
+       <span class="s1">&#39;p3 = {} </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Points</span> <span class="n">after</span> <span class="n">transformation</span><span class="p">:</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">10.000000000000012</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We applied the &#8220;same&#8221; transformation to the same point, so why are the
+results slightly different for the second initialization method?</p>
+<p>This is where theory meets practice. Using the axis-angle initialization
+method involves trigonometric functions which on a fixed precision machine
+lead to these slight differences. In many cases this is not an issue, but it
+is something to remember. From here on we will sweep it under the rug
+(printing with a more reasonable precision).</p>
+</div>
+<div class="section" id="translation-to-rigid-3d">
+<h3>Translation to Rigid [3D]<a class="headerlink" href="#translation-to-rigid-3d" title="Permalink to this headline">¶</a></h3>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Fill all the notebook. It&#8217;s too boring and requires too much work.</p>
+</div>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.020 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_moretransforms.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_moretransforms.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_moretransforms.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_moretransforms.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../../index.html">
+  <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/user_guide/transforms/plot_moretransforms.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../../_sources/user_guide/transforms/plot_moretransforms.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Region Growing Segmentation &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Image Interpolation" href="../transforms/plot_interpolation.html" />
+    <link rel="prev" title="Thresholding" href="plot_threshold.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="region-growing-segmentation">
+<span id="sphx-glr-user-guide-segmentation-plot-region-growing-py"></span><h1>Region Growing Segmentation<a class="headerlink" href="#region-growing-segmentation" title="Permalink to this headline">¶</a></h1>
+<p>Thresholding is the most basic form of segmentation. The first step of
+improvement upon the naive thresholding is a class of algorithms called
+region growing.</p>
+<p>The common theme in this class of algorithms is that a voxel&#8217;s
+neighbor is considered to be in the same class if its intensities are
+similar to the current voxel. The definition of similar is what varies.
+Initial set of voxel are called seed points. These initial seed points are
+usually manually selected.</p>
+<p>We illustrate the use of three variants of this family of algorithms:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1ConnectedThresholdImageFilter.html">ConnectedThreshold</a></li>
+<li><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1ConfidenceConnectedImageFilter.html">ConfidenceConnected</a></li>
+<li><a class="reference external" href="http://www.itk.org/Doxygen/html/classitk_1_1VectorConfidenceConnectedImageFilter.html">VectorConfidenceConnected</a></li>
+</ul>
+<p>We will illustrate the usage of these three filters using a cranial MRI
+scan (T1 and T2) and attempt to segment one of the ventricles.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Author: Sasank Chilamkurthy</span>
+<span class="c1"># License: Apache</span>
+<span class="c1"># sphinx_gallery_thumbnail_number = 4</span>
+
+<span class="kn">import</span> <span class="nn">SimpleITK</span> <span class="kn">as</span> <span class="nn">sitk</span>
+<span class="kn">from</span> <span class="nn">myshow</span> <span class="kn">import</span> <span class="n">myshow</span><span class="p">,</span> <span class="n">myshow3d</span>
+<span class="kn">from</span> <span class="nn">downloaddata</span> <span class="kn">import</span> <span class="n">fetch_data</span> <span class="k">as</span> <span class="n">fdata</span>
+</pre></div>
+</div>
+<div class="section" id="load-images">
+<h2>Load Images<a class="headerlink" href="#load-images" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img_T1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/A1_grayT1.nrrd&quot;</span><span class="p">))</span>
+
+<span class="c1"># To visualize the labels image in RGB needs a image with 0-255 range</span>
+<span class="n">img_T1_255</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">img_T1</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="n">img_T1</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()</span>
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;T1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_region_growing_001.png" class="align-center" src="../../_images/sphx_glr_plot_region_growing_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">A1_grayT1</span><span class="o">.</span><span class="n">nrrd</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="seed-selection">
+<h2>Seed selection<a class="headerlink" href="#seed-selection" title="Permalink to this headline">¶</a></h2>
+<p>Earlier we used 3D Slicer to determine that index: (132,142,96) was a
+good seed for the left lateral ventricle.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">seed</span> <span class="o">=</span> <span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
+
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">img_T1</span><span class="o">.</span><span class="n">GetSize</span><span class="p">(),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+<span class="n">seg</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="n">img_T1</span><span class="p">)</span>
+<span class="n">seg</span><span class="p">[</span><span class="n">seed</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">seg</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">BinaryDilate</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg</span><span class="p">),</span>
+         <span class="n">xslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Initial Seed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_region_growing_002.png" class="align-center" src="../../_images/sphx_glr_plot_region_growing_002.png" />
+</div>
+<div class="section" id="region-growing">
+<h2>Region Growing<a class="headerlink" href="#region-growing" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>Let&#8217;s start with <code class="docutils literal"><span class="pre">ConnectedThreshold</span></code>.</div></blockquote>
+<div class="section" id="id1">
+<h3><code class="docutils literal"><span class="pre">ConnectedThreshold</span></code><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Here, voxel’s neighbor is considered to be in the same class if the
+neighboring voxel’s intensity is within explicitly specified thresholds.</p>
+<p>We start by using explicitly specified thresholds, you should modify
+these (lower/upper) to see the effects on the resulting segmentation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">seg_con</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ConnectedThreshold</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">seedList</span><span class="o">=</span><span class="p">[</span><span class="n">seed</span><span class="p">],</span>
+                                  <span class="n">lower</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mi">190</span><span class="p">)</span>
+
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg_con</span><span class="p">),</span>
+         <span class="n">xslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Connected Threshold&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_region_growing_003.png" class="align-center" src="../../_images/sphx_glr_plot_region_growing_003.png" />
+</div>
+<div class="section" id="id2">
+<h3><code class="docutils literal"><span class="pre">ConfidenceConnected</span></code><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Unlike in <code class="docutils literal"><span class="pre">ConnectedThreshold</span></code>, you need not select the bounds in
+<code class="docutils literal"><span class="pre">ConfidenceConnected</span></code> filter. Bounds are implicitly specified as
+<span class="math">\(\mu\pm c\sigma\)</span>, where <span class="math">\(\mu\)</span> is the mean intensity of the seed
+points, <span class="math">\(\sigma\)</span> their standard deviation and <span class="math">\(c\)</span> a user specified
+constant.</p>
+<p>This algorithm has some flexibility which you should familiarize yourself with:</p>
+<ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">multiplier</span></code> parameter is the constant <span class="math">\(c\)</span> from the formula above.</li>
+<li>You can specify a region around each seed point <code class="docutils literal"><span class="pre">initialNeighborhoodRadius</span></code>
+from which the statistics are estimated, see what happens when you set it to zero.</li>
+<li>The <code class="docutils literal"><span class="pre">numberOfIterations</span></code> allows you to rerun the algorithm. In the first
+run the bounds are defined by the seed voxels you specified, in the
+following iterations <span class="math">\(\mu\)</span> and <span class="math">\(\sigma\)</span> are estimated from
+the segmented points and the region growing is updated accordingly.</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">seg_conf</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ConfidenceConnected</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">seedList</span><span class="o">=</span><span class="p">[</span><span class="n">seed</span><span class="p">],</span>
+                                    <span class="n">numberOfIterations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                    <span class="n">multiplier</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+                                    <span class="n">initialNeighborhoodRadius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                    <span class="n">replaceValue</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg_conf</span><span class="p">),</span>
+         <span class="n">xslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;ConfidenceConnected&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_region_growing_004.png" class="align-center" src="../../_images/sphx_glr_plot_region_growing_004.png" />
+</div>
+<div class="section" id="id3">
+<h3><code class="docutils literal"><span class="pre">VectorConfidenceConnected</span></code><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>A generalization of the previous approach to vector valued images,
+for instance multi-spectral images or multi-parametric MRI.
+Here, The bounds for neighboring voxel&#8217;s intensity vector is 2implicitly
+specified bounds using the Mahalanobis distance
+<span class="math">\(\sqrt{(\mathbf{x}-\mathbf{\mu})^T\Sigma^{-1}(\mathbf{x}-\mathbf{\mu})}&lt;c\)</span>,
+where <span class="math">\(\mathbf{\mu}\)</span> is the mean of the vectors at the seed points,
+<span class="math">\(\Sigma\)</span> is the covariance matrix and <span class="math">\(c\)</span> is a user specified
+constant.</p>
+<p>Let&#8217;s load a T2 image from the same person and combine it with the T1
+image to create a vector image and apply the algorithm on it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img_T2</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span>
+    <span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;nac-hncma-atlas2013-Slicer4Version/Data/A1_grayT2.nrrd&quot;</span><span class="p">))</span>
+<span class="n">img_T2_255</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Cast</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">RescaleIntensity</span><span class="p">(</span><span class="n">img_T2</span><span class="p">),</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkUInt8</span><span class="p">)</span>
+
+
+<span class="n">img_multi</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span><span class="n">img_T1</span><span class="p">,</span> <span class="n">img_T2</span><span class="p">)</span>
+<span class="n">seg_vec</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">VectorConfidenceConnected</span><span class="p">(</span><span class="n">img_multi</span><span class="p">,</span> <span class="n">seedList</span><span class="o">=</span><span class="p">[</span><span class="n">seed</span><span class="p">],</span>
+                                         <span class="n">numberOfIterations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                         <span class="n">multiplier</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                         <span class="n">initialNeighborhoodRadius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T2_255</span><span class="p">,</span> <span class="n">seg_vec</span><span class="p">),</span>
+         <span class="n">xslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;VectorConfidenceConnected&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_region_growing_005.png" class="align-center" src="../../_images/sphx_glr_plot_region_growing_005.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">nac</span><span class="o">-</span><span class="n">hncma</span><span class="o">-</span><span class="n">atlas2013</span><span class="o">-</span><span class="n">Slicer4Version</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">A1_grayT2</span><span class="o">.</span><span class="n">nrrd</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="clean-up-clean-up">
+<h2>Clean up, clean up<a class="headerlink" href="#clean-up-clean-up" title="Permalink to this headline">¶</a></h2>
+<p>Use of low level segmentation algorithms such as region growing is often followed by a clean up step. In this step we fill holes and remove small connected components. Both of these operations are achieved by using binary morphological operations, opening (<code class="docutils literal"><span class="pre">BinaryMorphologicalOpening</span></code>) to remove small connected components and closing (<code class="docutils literal"><span class="pre">BinaryMorphologicalClosing</span></code>) to fill holes.</p>
+<p>SimpleITK supports several shapes for the structuring elements (kernels) including:</p>
+<ul class="simple">
+<li>sitkAnnulus</li>
+<li>sitkBall</li>
+<li>sitkBox</li>
+<li>sitkCross</li>
+</ul>
+<p>The size of the kernel can be specified as a scalar (same for all dimensions) or as a vector of values, size per dimension.</p>
+<p>The following code illustrates the results of such a clean up, using
+closing to remove holes in the original segmentation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vectorRadius</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">sitkBall</span>
+<span class="n">seg_clean</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">BinaryMorphologicalClosing</span><span class="p">(</span><span class="n">seg_vec</span><span class="p">,</span>
+                                            <span class="n">vectorRadius</span><span class="p">,</span>
+                                            <span class="n">kernel</span><span class="p">)</span>
+
+<span class="n">myshow3d</span><span class="p">(</span><span class="n">sitk</span><span class="o">.</span><span class="n">LabelOverlay</span><span class="p">(</span><span class="n">img_T1_255</span><span class="p">,</span> <span class="n">seg_clean</span><span class="p">),</span>
+         <span class="n">xslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span> <span class="n">yslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">143</span><span class="p">),</span>
+         <span class="n">zslices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Cleaned up segmentation&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/sphx_glr_plot_region_growing_006.png" class="align-center" src="../../_images/sphx_glr_plot_region_growing_006.png" />
+<p><strong>Total running time of the script:</strong> ( 0 minutes  16.453 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_region_growing.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_region_growing.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../../_downloads/plot_region_growing.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_region_growing.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../../index.html">
+  <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/user_guide/segmentation/plot_region_growing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../../_sources/user_guide/segmentation/plot_region_growing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
