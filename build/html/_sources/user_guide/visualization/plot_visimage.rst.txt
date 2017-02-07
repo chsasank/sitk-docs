@@ -194,7 +194,7 @@ They have been copied into a "myshow.py" file so that they can be
 imported into other guides.
 
 
-**Total running time of the script:** ( 0 minutes  1.406 seconds)
+**Total running time of the script:** ( 0 minutes  1.309 seconds)
 
 
 

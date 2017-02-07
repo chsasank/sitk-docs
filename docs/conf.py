@@ -137,6 +137,7 @@ html_theme = 'alabaster'
 # documentation.
 html_theme_options = {
   'page_width': '1000px',
+  'fixed_sidebar': True
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
