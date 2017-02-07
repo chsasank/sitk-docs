@@ -26,20 +26,15 @@ color for SimpleITK images.
 
 
 
-SimpleITK has a built in `Show` method which saves the image to disk and
-launches a user configurable program ( defaults to ImageJ ), to display the
-image.
+Fetch and read image
 
 
 
 .. code-block:: python
 
-
     img1 = sitk.ReadImage(fdata("cthead1.png"))
-    sitk.Show(img1, title="cthead1")
-
     img2 = sitk.ReadImage(fdata("VM1111Shrink-RGB.png"))
-    sitk.Show(img2, title="Visible Human Head")
+
 
 
 
@@ -52,6 +47,15 @@ image.
     Fetching cthead1.png
     Fetching VM1111Shrink-RGB.png
 
+
+SimpleITK has a built in `Show` method which saves the image to disk and
+launches a user configurable program ( defaults to ImageJ ), to display the
+image.
+
+.. code-block:: python
+
+    sitk.Show(img1, title="cthead1")
+    sitk.Show(img2, title="Visible Human Head")
 
 Plotting with ``matplotlib``
 ----------------------------
@@ -190,7 +194,7 @@ They have been copied into a "myshow.py" file so that they can be
 imported into other guides.
 
 
-**Total running time of the script:** ( 0 minutes  1.597 seconds)
+**Total running time of the script:** ( 0 minutes  1.492 seconds)
 
 
 

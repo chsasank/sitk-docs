@@ -53,19 +53,21 @@ color for SimpleITK images.</p>
 <span class="kn">from</span> <span class="nn">downloaddata</span> <span class="kn">import</span> <span class="n">fetch_data</span> <span class="k">as</span> <span class="n">fdata</span>
 </pre></div>
 </div>
-<p>SimpleITK has a built in <cite>Show</cite> method which saves the image to disk and
-launches a user configurable program ( defaults to ImageJ ), to display the
-image.</p>
+<p>Fetch and read image</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">img1</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;cthead1.png&quot;</span><span class="p">))</span>
-<span class="n">sitk</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;cthead1&quot;</span><span class="p">)</span>
-
 <span class="n">img2</span> <span class="o">=</span> <span class="n">sitk</span><span class="o">.</span><span class="n">ReadImage</span><span class="p">(</span><span class="n">fdata</span><span class="p">(</span><span class="s2">&quot;VM1111Shrink-RGB.png&quot;</span><span class="p">))</span>
-<span class="n">sitk</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Visible Human Head&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Fetching</span> <span class="n">cthead1</span><span class="o">.</span><span class="n">png</span>
 <span class="n">Fetching</span> <span class="n">VM1111Shrink</span><span class="o">-</span><span class="n">RGB</span><span class="o">.</span><span class="n">png</span>
+</pre></div>
+</div>
+<p>SimpleITK has a built in <cite>Show</cite> method which saves the image to disk and
+launches a user configurable program ( defaults to ImageJ ), to display the
+image.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">sitk</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;cthead1&quot;</span><span class="p">)</span>
+<span class="n">sitk</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Visible Human Head&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="plotting-with-matplotlib">
@@ -152,7 +154,7 @@ image.</p>
 images( <code class="docutils literal"><span class="pre">myshow3d</span></code> ) in the next guide.
 They have been copied into a &#8220;myshow.py&#8221; file so that they can be
 imported into other guides.</p>
-<p><strong>Total running time of the script:</strong> ( 0 minutes  1.597 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  1.492 seconds)</p>
 <div class="sphx-glr-footer container">
 <div class="sphx-glr-download container">
 <a class="reference download internal" href="../../_downloads/plot_visimage.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_visimage.py</span></code></a></div>

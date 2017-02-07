@@ -13,17 +13,21 @@ import SimpleITK as sitk
 from downloaddata import fetch_data as fdata
 
 ##############################################################################
+# Fetch and read image
+img1 = sitk.ReadImage(fdata("cthead1.png"))
+img2 = sitk.ReadImage(fdata("VM1111Shrink-RGB.png"))
+
+
+##############################################################################
 # SimpleITK has a built in `Show` method which saves the image to disk and
 # launches a user configurable program ( defaults to ImageJ ), to display the
 # image.
-
-img1 = sitk.ReadImage(fdata("cthead1.png"))
-sitk.Show(img1, title="cthead1")
-
-img2 = sitk.ReadImage(fdata("VM1111Shrink-RGB.png"))
-sitk.Show(img2, title="Visible Human Head")
-
-##############################################################################
+#
+# .. code-block:: python
+#
+#     sitk.Show(img1, title="cthead1")
+#     sitk.Show(img2, title="Visible Human Head")
+#
 # Plotting with ``matplotlib``
 # ----------------------------
 # You can also use matplotlib to show images.
