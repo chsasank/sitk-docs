@@ -1,6 +1,6 @@
 """
-Function to show images
-=======================
+myshow.py
+=========
 
 Functions created in guides for visualization in other guides.
 If you want to run the code from other guides, please download this file (by 

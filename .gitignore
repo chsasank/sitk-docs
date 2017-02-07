@@ -6,7 +6,7 @@ docs/doxyxml
 docs/user_guide
 docs/auto_examples
 # Data
-Data
+docs/user_guide_source/Data
 .DS_Store
 #build
 build/doctrees

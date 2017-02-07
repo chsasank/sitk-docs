@@ -47,6 +47,26 @@ Basics of Image
    :hidden:
 
    /user_guide/myshow
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Download this file and Data folder and add them to your python path to run other examples.">
+
+.. only:: html
+
+    .. figure:: /user_guide/images/thumb/sphx_glr_downloaddata_thumb.png
+
+        :ref:`sphx_glr_user_guide_downloaddata.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /user_guide/downloaddata
 .. raw:: html
 
     <div style='clear:both'></div>

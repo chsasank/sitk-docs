@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>downloaddata.py &#8212; SimpleITK 0.11 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Thresholding" href="segmentation/plot_threshold.html" />
+    <link rel="prev" title="myshow.py" href="myshow.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="downloaddata-py">
+<span id="sphx-glr-user-guide-downloaddata-py"></span><h1>downloaddata.py<a class="headerlink" href="#downloaddata-py" title="Permalink to this headline">¶</a></h1>
+<p>Download this file and Data folder and add them to your python path to run other
+examples.</p>
+<p>Since we do not want to store large binary data files in our Git repository,
+we fetch_data_all from a network resource.</p>
+<p>The data we download is described in a json file. The file format is a dictionary
+of dictionaries. The top level key is the file name. The returned dictionary
+contains an md5 checksum and possibly a url and boolean flag indicating
+the file is part of an archive. The md5 checksum is mandatory.
+When the optional url is given, we attempt to download from that url, otherwise
+we attempt to download from the list of MIDAS servers returned by the
+get_midas_servers() function. Files that are contained in archives are
+identified by the archive flag.</p>
+<p>Example json file contents:</p>
+<p>{
+&#8220;SimpleITK.jpg&#8221;: {
+&#8220;md5sum&#8221;: &#8220;2685660c4f50c5929516127aed9e5b1a&#8221;
+},
+&#8220;POPI/meta/00.mhd&#8221; : {
+&#8220;md5sum&#8221;: &#8220;3bfc3c92e18a8e6e8494482c44654fd3&#8221;,
+&#8220;url&#8221;: &#8220;<a class="reference external" href="http://tux.creatis.insa-lyon.fr/~srit/POPI/Images/MetaImage/10-MetaImage.tar">http://tux.creatis.insa-lyon.fr/~srit/POPI/Images/MetaImage/10-MetaImage.tar</a>&#8221;
+},
+&#8220;CIRS057A_MR_CT_DICOM/readme.txt&#8221; : {</p>
+<blockquote>
+<div>&#8220;md5sum&#8221; : &#8220;d92c97e6fe6520cb5b1a50b96eb9eb96&#8221;,
+&#8220;archive&#8221; : &#8220;true&#8221;</div></blockquote>
+<div class="section" id="id1">
+<h2>}<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Notes:
+1. The file we download can be inside an archive. In this case, the md5
+checksum is that of the archive.</p>
+<ol class="arabic" start="2">
+<li><p class="first">For the md5 verification to work we need to store archives on MIDAS and cannot
+use its on-the-fly archive download mechanism (this mechanism allows users
+to download &#8220;directories/communities&#8221; as a single zip archive). The issue is that
+every time the archive is created its md5 changes. It is likely MIDAS is also
+encoding the archive&#8217;s modification/creation time as part of the md5.</p>
+<p>Another issue is that when downloading from this type of url
+(e.g. <a class="reference external" href="http://midas3.kitware.com/midas/download/folder/11610/ipythonNotebookData.zip">http://midas3.kitware.com/midas/download/folder/11610/ipythonNotebookData.zip</a>)
+the returned data does not have a &#8220;Content-Length&#8221; field in the header. The
+current implementation  will throw an exception.</p>
+</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="c1"># http://stackoverflow.com/questions/2028517/python-urllib2-progress-hook</span>
+
+<span class="k">def</span> <span class="nf">url_download_report</span><span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">url_download_size</span><span class="p">,</span> <span class="n">total_size</span><span class="p">):</span>
+    <span class="n">percent</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bytes_so_far</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_size</span>
+    <span class="n">percent</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">percent</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bytes_so_far</span> <span class="o">&gt;</span> <span class="n">url_download_size</span><span class="p">:</span>
+        <span class="c1"># Note that the carriage return is at the begining of the</span>
+        <span class="c1"># string and not the end. This accomodates usage in</span>
+        <span class="c1"># IPython usage notebooks. Otherwise the string is not</span>
+        <span class="c1"># displayed in the output.</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">Downloaded </span><span class="si">%d</span><span class="s2"> of </span><span class="si">%d</span><span class="s2"> bytes (</span><span class="si">%0.2f%%</span><span class="s2">)&quot;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">total_size</span><span class="p">,</span> <span class="n">percent</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">bytes_so_far</span> <span class="o">&gt;=</span> <span class="n">total_size</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">Downloaded </span><span class="si">%d</span><span class="s2"> of </span><span class="si">%d</span><span class="s2"> bytes (</span><span class="si">%0.2f%%</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">total_size</span><span class="p">,</span> <span class="n">percent</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">url_download_read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outputfile</span><span class="p">,</span> <span class="n">url_download_size</span><span class="o">=</span><span class="mi">8192</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">report_hook</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c1"># Use the urllib2 to download the data. The Requests package, highly</span>
+    <span class="c1"># recommended for this task, doesn&#39;t support the file scheme so we opted</span>
+    <span class="c1"># for urllib2 which does.</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Python 3</span>
+        <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span><span class="p">,</span> <span class="n">URLError</span><span class="p">,</span> <span class="n">HTTPError</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">urlopen</span><span class="p">,</span> <span class="n">URLError</span><span class="p">,</span> <span class="n">HTTPError</span>
+    <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
+
+    <span class="c1"># Open the url</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">url_response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;HTTP Error: {0} {1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">URLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;URL Error: {0} {1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="c1"># MIDAS is a service and therefor will not generate the expected URLError</span>
+    <span class="c1"># when given a nonexistent url. It does return an error message in xml.</span>
+    <span class="c1"># When the response is xml then we have an error, we read the whole message</span>
+    <span class="c1"># and return the &#39;msg&#39; attribute associated with the &#39;err&#39; tag.</span>
+    <span class="c1"># The URLError above is not superfluous as it will occur when the url</span>
+    <span class="c1"># refers to a non existent file (&#39;file://non_existent_file_name&#39;) or url</span>
+    <span class="c1"># which is not a service (&#39;http://non_existent_address&#39;).</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Python 3</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">url_response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">url_response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+    <span class="c1"># MIDAS error message in json format</span>
+    <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="s2">&quot;text/html; charset=UTF-8&quot;</span><span class="p">:</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">url_response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;stat&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;fail&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">url</span>
+    <span class="c1"># MIDAS error message in xml format</span>
+    <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="s2">&quot;text/xml&quot;</span><span class="p">:</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">url_response</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;err&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;err&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">url</span>
+    <span class="c1"># We download all content types - the assumption is that the md5sum ensures</span>
+    <span class="c1"># that what we received is the expected data.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Python 3</span>
+        <span class="n">content_length</span> <span class="o">=</span> <span class="n">url_response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">content_length</span> <span class="o">=</span> <span class="n">url_response</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">)</span>
+    <span class="n">total_size</span> <span class="o">=</span> <span class="n">content_length</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">total_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span>
+    <span class="n">bytes_so_far</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outputfile</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">local_file</span><span class="p">:</span>
+        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">url_download</span> <span class="o">=</span> <span class="n">url_response</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">url_download_size</span><span class="p">)</span>
+                <span class="n">bytes_so_far</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">url_download</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">url_download</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">local_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">url_download</span><span class="p">)</span>
+            <span class="c1"># handle errors</span>
+            <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;HTTP Error: {0} {1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">URLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;URL Error: {0} {1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">report_hook</span><span class="p">:</span>
+                <span class="n">report_hook</span><span class="p">(</span><span class="n">bytes_so_far</span><span class="p">,</span> <span class="n">url_download_size</span><span class="p">,</span> <span class="n">total_size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;Downloaded Successfully&quot;</span>
+
+<span class="c1"># http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python?rq=1</span>
+<span class="k">def</span> <span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># Python &gt;2.5</span>
+        <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span>
+
+<span class="c1">#http://stackoverflow.com/questions/2536307/decorators-in-the-python-standard-lib-deprecated-specifically</span>
+<span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a decorator which can be used to mark functions</span>
+<span class="sd">    as deprecated. It will result in a warning being emmitted</span>
+<span class="sd">    when the function is used.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;always&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span> <span class="c1">#turn off filter</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Call to deprecated function {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">),</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span> <span class="c1">#reset filter</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">new_func</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span>
+    <span class="n">new_func</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__doc__</span>
+    <span class="n">new_func</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_func</span>
+
+
+
+<span class="k">def</span> <span class="nf">get_midas_servers</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">midas_servers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;ExternalData_OBJECT_STORES&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">local_object_stores</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ExternalData_OBJECT_STORES&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">local_object_store</span> <span class="ow">in</span> <span class="n">local_object_stores</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+          <span class="n">midas_servers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;file://{0}/MD5/%(hash)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">local_object_store</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">midas_servers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="p">[</span>
+        <span class="c1"># Data published by MIDAS</span>
+        <span class="s2">&quot;http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&amp;checksum=%(hash)&amp;algorithm=%(algo)&quot;</span><span class="p">,</span>
+        <span class="c1"># Data published by developers using git-gerrit-push.</span>
+        <span class="s2">&quot;http://www.itk.org/files/ExternalData/%(algo)/%(hash)&quot;</span><span class="p">,</span>
+        <span class="c1"># Mirror supported by the Slicer community.</span>
+        <span class="s2">&quot;http://slicer.kitware.com/midas3/api/rest?method=midas.bitstream.download&amp;checksum=%(hash)&amp;algorithm=%(algo)&quot;</span><span class="p">,</span>
+        <span class="c1"># Insight journal data server</span>
+        <span class="s2">&quot;http://www.insight-journal.org/midas/api/rest?method=midas.bitstream.by.hash&amp;hash=%(hash)&quot;</span>
+        <span class="p">])</span>
+    <span class="k">return</span> <span class="n">midas_servers</span>
+
+
+<span class="k">def</span> <span class="nf">output_hash_is_valid</span><span class="p">(</span><span class="n">known_md5sum</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">url_download</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">128</span> <span class="o">*</span> <span class="n">md5</span><span class="o">.</span><span class="n">block_size</span><span class="p">),</span> <span class="n">b</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">url_download</span><span class="p">)</span>
+    <span class="n">retreived_md5sum</span> <span class="o">=</span> <span class="n">md5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">retreived_md5sum</span> <span class="o">==</span> <span class="n">known_md5sum</span>
+
+
+<span class="k">def</span> <span class="nf">fetch_data_one</span><span class="p">(</span><span class="n">onefilename</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">tarfile</span><span class="o">,</span> <span class="nn">zipfile</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">onefilename</span> <span class="ow">in</span> <span class="n">manifest</span><span class="p">,</span> <span class="s2">&quot;ERROR: {0} does not exist in {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">onefilename</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Fetching {0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">onefilename</span><span class="p">))</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">onefilename</span><span class="p">))</span>
+    <span class="n">data_dictionary</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="n">onefilename</span><span class="p">]</span>
+    <span class="n">md5sum</span> <span class="o">=</span> <span class="n">data_dictionary</span><span class="p">[</span><span class="s1">&#39;md5sum&#39;</span><span class="p">]</span>
+    <span class="c1"># List of places where the file can be downloaded from</span>
+    <span class="n">all_urls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="s2">&quot;url&quot;</span> <span class="ow">in</span> <span class="n">data_dictionary</span><span class="p">:</span>
+        <span class="n">all_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">url_base</span> <span class="ow">in</span> <span class="n">get_midas_servers</span><span class="p">():</span>
+            <span class="n">all_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_base</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%(hash)&quot;</span><span class="p">,</span> <span class="n">md5sum</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%(algo)&quot;</span><span class="p">,</span> <span class="s2">&quot;md5&quot;</span><span class="p">))</span>
+
+    <span class="n">new_download</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">all_urls</span><span class="p">:</span>
+        <span class="c1"># Only download if force is true or the file does not exist.</span>
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_file</span><span class="p">):</span>
+            <span class="n">mkdir_p</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output_file</span><span class="p">))</span>
+            <span class="c1"># url_download_read(url, output_file, report_hook=url_download_report)</span>
+            <span class="n">url_download_read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">report_hook</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+            <span class="c1"># Check if a file was downloaded and has the correct hash</span>
+            <span class="k">if</span> <span class="n">output_hash_is_valid</span><span class="p">(</span><span class="n">md5sum</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+                <span class="n">new_download</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="c1"># Stop looking once found</span>
+                <span class="k">break</span>
+            <span class="c1"># If the file exists this means the hash is invalid we have a problem.</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_file</span><span class="p">):</span>
+                    <span class="n">error_msg</span> <span class="o">=</span> <span class="s2">&quot;File &quot;</span> <span class="o">+</span> <span class="n">output_file</span>
+                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="s2">&quot; has incorrect hash value, &quot;</span> <span class="o">+</span> <span class="n">md5sum</span> <span class="o">+</span> <span class="s2">&quot; was expected.&quot;</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+
+    <span class="c1"># Did not find the file anywhere.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_file</span><span class="p">):</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="s2">&quot;File &quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">&quot;</span>  <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">&quot;</span>
+        <span class="n">error_msg</span> <span class="o">+=</span> <span class="s2">&quot; could not be found in any of the following locations:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">error_msg</span> <span class="o">+=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_urls</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_download</span> <span class="ow">and</span> <span class="n">verify</span><span class="p">:</span>
+        <span class="c1"># If the file was part of an archive then we don&#39;t verify it. These</span>
+        <span class="c1"># files are only verfied on download</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="ow">not</span> <span class="s2">&quot;archive&quot;</span> <span class="ow">in</span> <span class="n">data_dictionary</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span> <span class="ow">not</span> <span class="n">output_hash_is_valid</span><span class="p">(</span><span class="n">md5sum</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span> <span class="p">):</span>
+            <span class="c1"># Attempt to download if md5sum is incorrect.</span>
+            <span class="n">fetch_data_one</span><span class="p">(</span><span class="n">onefilename</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span>
+                           <span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c1"># If the file is in an archive, unpack it.</span>
+    <span class="k">if</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span> <span class="ow">or</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">output_file</span><span class="p">):</span>
+        <span class="n">tmp_output_file</span> <span class="o">=</span> <span class="n">output_file</span> <span class="o">+</span> <span class="s2">&quot;.tmp&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">tmp_output_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">is_tarfile</span><span class="p">(</span><span class="n">tmp_output_file</span><span class="p">):</span>
+            <span class="n">archive</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tmp_output_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">tmp_output_file</span><span class="p">):</span>
+            <span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">tmp_output_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">tmp_output_file</span><span class="p">))</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_output_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_file</span>
+
+<span class="nd">@deprecated</span>
+<span class="k">def</span> <span class="nf">fetch_midas_data_one</span><span class="p">(</span><span class="n">onefilename</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fetch_data_one</span><span class="p">(</span><span class="n">onefilename</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fetch_data_all</span><span class="p">(</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">manifest_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">manifest</span><span class="p">:</span>
+        <span class="n">fetch_data_one</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span>
+                       <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="nd">@deprecated</span>
+<span class="k">def</span> <span class="nf">fetch_midas_data_all</span><span class="p">(</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fetch_data_all</span><span class="p">(</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">cache_file_name</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">cache_directory_name</span><span class="o">=</span><span class="s2">&quot;Data&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fetch_data is a simplified interface that requires</span>
+<span class="sd">    relative pathing with a manifest.json file located in the</span>
+<span class="sd">    same cache_directory_name name.</span>
+
+<span class="sd">    By default the cache_directory_name is &quot;Data&quot; relative to the current</span>
+<span class="sd">    python script.  An absolute path can also be given.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">cache_directory_name</span><span class="p">):</span>
+        <span class="n">cache_root_directory_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+        <span class="n">cache_directory_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_root_directory_name</span><span class="p">,</span> <span class="n">cache_directory_name</span><span class="p">)</span>
+    <span class="n">cache_manifest_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_directory_name</span><span class="p">,</span> <span class="s1">&#39;manifest.json&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_manifest_file</span><span class="p">),</span> <span class="s2">&quot;ERROR, {0} does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cache_manifest_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fetch_data_one</span><span class="p">(</span><span class="n">cache_file_name</span><span class="p">,</span> <span class="n">cache_directory_name</span><span class="p">,</span> <span class="n">cache_manifest_file</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">verify</span><span class="p">)</span>
+
+<span class="nd">@deprecated</span>
+<span class="k">def</span> <span class="nf">fetch_midas_data</span><span class="p">(</span><span class="n">cache_file_name</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">cache_directory_name</span><span class="o">=</span><span class="s2">&quot;Data&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">cache_file_name</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span> <span class="n">cache_directory_name</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Usage: &#39;</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; output_directory manifest.json&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">output_directory</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_directory</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_directory</span><span class="p">)</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">fetch_data_all</span><span class="p">(</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/downloaddata.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">downloaddata.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/downloaddata.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">downloaddata.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../index.html">
+  <img class="logo" src="../_static/logo.png" alt="Logo"/>
+</a>
+</p>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installing SimpleITK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/build.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/downloaddata.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Insight Software Consortium & Sasank.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/user_guide/downloaddata.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
