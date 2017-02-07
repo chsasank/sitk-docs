@@ -4,3 +4,4 @@ pillow
 sphinx
 nose
 simpleitk
+sphinx_gallery
