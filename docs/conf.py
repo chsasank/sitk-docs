@@ -31,7 +31,7 @@ sys.path.insert(1, os.path.abspath('./user_guide_source'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-            'breathe',
+            # 'breathe',
              "sphinx.ext.mathjax",
 			       'sphinx_gallery.gen_gallery',
              "sphinx.ext.todo"

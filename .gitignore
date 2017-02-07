@@ -2,9 +2,9 @@ __pycache__
 *.pyc
 .DS_Store
 # generated documentation
-source/doxyxml
-source/user_guide
-source/auto_examples
+docs/doxyxml
+docs/user_guide
+docs/auto_examples
 # Data
 Data
 .DS_Store
