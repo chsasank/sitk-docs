@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Since we do not want to store large binary data files in our Git repository,
 we fetch_data_all from a network resource.
@@ -225,7 +223,8 @@ def fetch_data_one(onefilename, output_directory, manifest_file, verify=True, fo
         # Only download if force is true or the file does not exist.
         if force or not os.path.exists(output_file):
             mkdir_p(os.path.dirname(output_file))
-            url_download_read(url, output_file, report_hook=url_download_report)
+            # url_download_read(url, output_file, report_hook=url_download_report)
+            url_download_read(url, output_file, report_hook=None)
             # Check if a file was downloaded and has the correct hash
             if output_hash_is_valid(md5sum, output_file):
                 new_download = True
