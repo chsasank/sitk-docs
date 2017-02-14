@@ -174,6 +174,7 @@ myshow(resampled, 'Inverse Resampled')
 ##############################################################################
 # An affine (line preserving) transformation, can perform translation, scaling,
 # rotation and shearing:
+#
 # Translation
 # -----------
 
