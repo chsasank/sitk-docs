@@ -20,7 +20,7 @@ A few conventions:
     :backlinks: none
 
 """
-# Author: Sasank Chilamkurthy
+# License: CC-BY
 # sphinx_gallery_thumbnail_number = 7
 
 import SimpleITK as sitk

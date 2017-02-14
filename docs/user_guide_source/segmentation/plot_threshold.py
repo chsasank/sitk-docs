@@ -6,8 +6,7 @@ Thresholding is the most basic form of segmentation. It simply labels the
 pixels of an image based on the intensity range without respect to geometry
 or connectivity.
 """
-# Author: Sasank Chilamkurthy
-# License: Apache
+# License: CC-BY
 # sphinx_gallery_thumbnail_number = 4
 
 import SimpleITK as sitk

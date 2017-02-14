@@ -21,8 +21,7 @@ We illustrate the use of three variants of this family of algorithms:
 We will illustrate the usage of these three filters using a cranial MRI
 scan (T1 and T2) and attempt to segment one of the ventricles.
 """
-# Author: Sasank Chilamkurthy
-# License: Apache
+# License: CC-BY
 # sphinx_gallery_thumbnail_number = 4
 
 import SimpleITK as sitk

@@ -63,7 +63,7 @@ def setup(app):
 master_doc = 'index'
 
 # General information about the project.
-project = 'SimpleITK'
+project = 'SimpleITK prototype'
 copyright = '2017, Insight Software Consortium & Sasank'
 author = 'Insight Software Consortium & Sasank'
 
