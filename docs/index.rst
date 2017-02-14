@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SimpleITK's documentation!
-*************************************
+Welcome to Prototype SimpleITK's documentation!
+***********************************************
 
 
 SimpleITK is an image analysis toolkit with a large number of components
